@@ -1,49 +1,6 @@
 @import "tailwindcss";
 @import url('https://cdn.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css');
-
-@theme {
-  --font-pixel: 'Galmuri11', 'Galmuri9', ui-monospace, monospace;
-  --color-bg: #1a1a2e;
-  --color-panel: #16213e;
-  --color-panel2: #0f3460;
-  --color-accent: #e94560;
-  --color-gold: #ffd166;
-  --color-mint: #06d6a0;
-  --color-sky: #4cc9f0;
-  --color-ink: #eaeaea;
-  --color-muted: #9aa5b1;
-}
+@import "../design/theme/theme.css";
 
 html, body, #root { height: 100%; }
-body {
-  background: var(--color-bg);
-  color: var(--color-ink);
-  font-family: var(--font-pixel);
-  -webkit-font-smoothing: none;
-}
-canvas.pixel { image-rendering: pixelated; image-rendering: crisp-edges; }
-
-.pixel-border {
-  border: 3px solid var(--color-ink);
-  box-shadow: 4px 4px 0 #000;
-}
-.btn {
-  @apply inline-flex items-center justify-center gap-1 px-3 py-2 font-bold select-none active:translate-y-[2px] active:shadow-none;
-  border: 2px solid #000;
-  box-shadow: 3px 3px 0 #000;
-  background: var(--color-panel2);
-  color: var(--color-ink);
-}
-.btn-accent { background: var(--color-accent); color: #fff; }
-.btn-gold { background: var(--color-gold); color: #000; }
-.btn-mint { background: var(--color-mint); color: #000; }
-.btn-ghost { background: transparent; box-shadow: none; border-color: var(--color-muted); }
-.input {
-  @apply w-full px-2 py-1.5 text-sm;
-  background: #0b1020; color: var(--color-ink); border: 2px solid var(--color-muted);
-}
-.input:focus { outline: none; border-color: var(--color-sky); }
-.label { @apply block text-xs text-muted mb-1; }
-.card { @apply p-3; background: var(--color-panel); border: 2px solid #000; box-shadow: 4px 4px 0 #000; }
-.bar { height: 10px; background: #0b1020; border: 2px solid #000; }
-.bar > div { height: 100%; }
+body { background: var(--color-bg); color: var(--color-ink); }

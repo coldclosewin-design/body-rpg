@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import type { Appearance } from '@/types/model'
 import { DEFAULT_OUTFIT, spriteByKey } from './sprites'
-import { CANVAS_H, CANVAS_W, type PaletteRole, type SpriteDef, type SpriteSource } from './types'
+import { CANVAS_H, CANVAS_W, type PaletteRole, type SpriteDef, type SpriteSource } from '@design/pixel/types'
 
 export interface PixelCanvasProps {
   appearance: Appearance

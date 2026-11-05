@@ -9,7 +9,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 const base = process.env.VITE_BASE ?? '/'
 
 export default defineConfig({
-  resolve: { alias: { '@': path.resolve(import.meta.dirname, 'src') } },
+  resolve: { alias: { '@': path.resolve(import.meta.dirname, 'src'), '@design': path.resolve(import.meta.dirname, 'design') } },
   base,
   plugins: [
     react(),
@@ -35,6 +35,6 @@ export default defineConfig({
   ],
   test: {
     environment: 'node',
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'design/**/*.test.ts'],
   },
 })

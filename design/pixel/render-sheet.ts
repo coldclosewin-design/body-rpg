@@ -1,14 +1,17 @@
-// 캐릭터 도감 시트 PNG 생성. 실행: npx tsx scripts/render-sheet.ts [scale]
+// 캐릭터 도감 시트 PNG 생성. 실행: npm run sheet  (= npx tsx design/pixel/render-sheet.ts [scale])
+// 출력: design/character-sheet.png
 import { deflateSync } from 'node:zlib'
-import { writeFileSync, mkdirSync } from 'node:fs'
-import { CHARACTERS } from '../src/pixel/characters'
-import { compose } from '../src/pixel/parts'
-import { PALETTE } from '../src/pixel/sprites'
+import { writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { CHARACTERS } from './characters'
+import { compose } from './parts'
+import { DEFAULT_APPEARANCE, PALETTE } from './palette'
 
 const SCALE = Number(process.argv[2] ?? 6)
 const COLS = 5
 const CELL_W = 24, CELL_H = 32, PAD = 4
-const APPEAR = { skin: '#f3c9a6', skinShadow: '#c7a588', hair: '#3b2a1a', hairShadow: '#291d12', outfit: '#e94560', outfitDark: '#a3303f' }
+const APPEAR = DEFAULT_APPEARANCE
 const BG: [number, number, number] = [26, 26, 46]
 const CELL_BG: [number, number, number] = [22, 33, 62]
 
@@ -16,7 +19,7 @@ const hex = (h: string): [number, number, number] => [parseInt(h.slice(1, 3), 16
 const colorOf = (ch: string): [number, number, number] | null => {
   const v = PALETTE[ch]
   if (!v) return null
-  const resolved = (APPEAR as Record<string, string>)[v] ?? v
+  const resolved = APPEAR[v] ?? v
   return hex(resolved)
 }
 
@@ -53,6 +56,6 @@ const raw = Buffer.alloc((W * 3 + 1) * H)
 for (let y = 0; y < H; y++) { raw[y * (W * 3 + 1)] = 0; px.subarray(y * W * 3, (y + 1) * W * 3).forEach((v, i) => { raw[y * (W * 3 + 1) + 1 + i] = v }) }
 const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(W, 0); ihdr.writeUInt32BE(H, 4); ihdr[8] = 8; ihdr[9] = 2
 const png = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), chunk('IHDR', ihdr), chunk('IDAT', deflateSync(raw)), chunk('IEND', Buffer.alloc(0))])
-mkdirSync('docs', { recursive: true })
-writeFileSync('docs/character-sheet.png', png)
-console.log(`docs/character-sheet.png ${W}x${H}, ${CHARACTERS.length} characters`)
+const out = join(dirname(fileURLToPath(import.meta.url)), '..', 'character-sheet.png')
+writeFileSync(out, png)
+console.log(`${out} ${W}x${H}, ${CHARACTERS.length} characters`)

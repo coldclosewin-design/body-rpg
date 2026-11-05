@@ -1,8 +1,8 @@
 /**
  * 스프라이트 소스 두 종류.
- * - pixelmap: 코드로 그린 문자 픽셀맵 (src/pixel/parts.ts + characters.ts 에서 합성)
+ * - pixelmap: 코드로 그린 문자 픽셀맵 (design/pixel/parts.ts + characters.ts 에서 합성)
  * - png: 나중에 사용자가 제공하는 스프라이트 시트 (public/sprites/*.png)
- * 렌더러(PixelCanvas)는 둘 다 처리하므로 sprites.ts 레지스트리 항목만 바꾸면 교체된다.
+ * 렌더러(src/pixel/PixelCanvas)는 둘 다 처리하므로 src/pixel/sprites.ts 레지스트리 항목만 바꾸면 교체된다.
  */
 
 /** 팔레트 역할 문자. 캐릭터 외형(피부/머리/옷 색)에 따라 실제 색으로 치환된다. */

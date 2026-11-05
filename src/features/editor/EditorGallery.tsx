@@ -1,6 +1,6 @@
 import { useWorld } from '@/app/world'
 import { PixelCanvas } from '@/pixel/PixelCanvas'
-import { CHARACTERS } from '@/pixel/characters'
+import { CHARACTERS } from '@design/pixel/characters'
 import { spritesOfLayer } from '@/pixel/sprites'
 
 /** 캐릭터 도감: 모든 직업 스킨과 액세서리, 해금 경로 표시 */

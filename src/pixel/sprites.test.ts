@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { PALETTE, SPRITES } from './sprites'
-import * as P from './parts'
-import { CANVAS_H, CANVAS_W } from './types'
+import * as P from '@design/pixel/parts'
+import { CANVAS_H, CANVAS_W } from '@design/pixel/types'
 
 /** 파츠 원본 행 길이가 들쭉날쭉하면(오타) 여기서 잡힌다 */
 const PART_EXPORTS = Object.entries(P).filter(([, v]) => typeof v === 'object' && v && 'rows' in (v as object)) as [string, P.Part][]

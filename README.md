@@ -48,26 +48,31 @@ npm run build        # dist/
 
 계산은 모두 `src/game/` 의 순수함수이며 기록(`logs`)에서 매번 재계산된다. 과제 설정을 바꿔도 과거 기록이 유지된다.
 
-## 픽셀 캐릭터 에셋 교체
+## 디자인 컨셉과 픽셀 캐릭터
 
-`src/pixel/sprites.ts` 의 레지스트리가 모든 그래픽을 정의한다. 현재는 16×24 문자 픽셀맵이고, PNG 스프라이트 시트로 바꾸려면 항목의 `source` 를 다음처럼 바꾸면 된다.
+그림·색·폰트의 원본은 `design/` 폴더에 있고 앱은 `@design/*` 로 가져다 쓴다. 컨셉 설명, 캐릭터 규격(24×32, 2프레임), 파츠 조합법, 테마 토큰은 [design/README.md](design/README.md) 참고. 캐릭터 시트는 `npm run sheet` 로 `design/character-sheet.png` 에 다시 그린다.
+
+### PNG 에셋으로 교체
+
+`src/pixel/sprites.ts` 의 레지스트리가 앱 키와 그림을 연결한다. PNG 스프라이트 시트로 바꾸려면 항목의 `source` 를 다음처럼 바꾸면 된다.
 
 ```ts
-{ key: 'pro_kit', label: '프로 유니폼', layer: 'outfit',
-  source: { kind: 'png', url: '/sprites/pro_kit.png', frameW: 16, frameH: 24, frames: 2 } }
+{ key: 'striker', label: '스트라이커', layer: 'outfit',
+  source: { kind: 'png', url: '/sprites/striker.png', frameW: 24, frameH: 32, frames: 2 } }
 ```
 
-레이어 순서: body → hair → outfit → accessory. 프레임은 가로로 나열(idle 2프레임).
-PNG 는 `public/sprites/` 에 둔다. 팔레트 색은 pixelmap 에서만 적용되므로 PNG 는 최종 색으로 그린다.
+레이어 순서: outfit(전신 직업 스킨) → accessory. 프레임은 가로로 나열(idle 2프레임).
+PNG 는 `public/sprites/` 에 둔다. 팔레트 색 치환은 pixelmap 에서만 적용되므로 PNG 는 최종 색으로 그린다.
 
 ## 구조
 
 ```
 src/app/        라우터, 레이아웃(모바일 탭/PC 사이드바), 인증, WorldProvider(데이터·낙관적 업데이트)
 src/game/       게임 규칙 순수함수 + 테스트
-src/pixel/      픽셀 캐릭터 렌더러와 스프라이트 레지스트리
+src/pixel/      픽셀 캐릭터 React 렌더러와 앱 스프라이트 레지스트리 (그림 원본은 design/)
 src/features/   화면: today(오늘 퀘스트) character skills editor(편집) friends
 src/lib/        supabase 클라이언트, Repo(로컬/클라우드 저장소)
 src/data/       예시 세계관 시드
 supabase/       DB 스키마 + RLS
+design/         디자인 컨셉: 픽셀 파츠·캐릭터·팔레트, 테마 토큰, 캐릭터 시트 (재사용 단위)
 ```
