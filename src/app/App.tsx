@@ -11,6 +11,7 @@ import { EditorSkills } from '@/features/editor/EditorSkills'
 import { EditorSeasons } from '@/features/editor/EditorSeasons'
 import { EditorCharacter } from '@/features/editor/EditorCharacter'
 import { EditorData } from '@/features/editor/EditorData'
+import { EditorGallery } from '@/features/editor/EditorGallery'
 import { FriendsPage } from '@/features/friends/FriendsPage'
 
 export function App() {
@@ -37,6 +38,7 @@ export function App() {
           <Route path="seasons" element={<EditorSeasons />} />
           <Route path="character" element={<EditorCharacter />} />
           <Route path="data" element={<EditorData />} />
+          <Route path="gallery" element={<EditorGallery />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

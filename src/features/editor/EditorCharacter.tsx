@@ -18,7 +18,6 @@ export function EditorCharacter() {
   const titles = [...new Set(derived.unlocked.filter((u) => u.startsWith('title:')).map((u) => u.slice(6)))]
   const outfits = spritesOfLayer('outfit').map((s) => ({ ...s, ok: unlocked.has(`outfit:${s.key}`) }))
   const accs = spritesOfLayer('accessory').map((s) => ({ ...s, ok: unlocked.has(`accessory:${s.key}`) }))
-  const hairs = spritesOfLayer('hair')
 
   return (
     <div className="grid md:grid-cols-[auto_1fr] gap-3">
@@ -34,20 +33,15 @@ export function EditorCharacter() {
           <Field label="머리색"><input className="input h-9 p-0" type="color" value={c.appearance.hair} onChange={(e) => setA({ hair: e.target.value })} /></Field>
           <Field label="기본 옷색"><input className="input h-9 p-0" type="color" value={c.appearance.outfitColor} onChange={(e) => setA({ outfitColor: e.target.value })} /></Field>
         </div>
-        <Field label="머리 스타일">
-          <select className="input" value={c.appearance.hairStyle} onChange={(e) => setA({ hairStyle: e.target.value })}>
-            {hairs.map((h) => <option key={h.key} value={h.key.replace('hair_', '')}>{h.label}</option>)}
-          </select>
-        </Field>
         <Field label="칭호 (해금된 것만)">
           <select className="input" value={c.equippedTitle ?? ''} onChange={(e) => set({ equippedTitle: e.target.value || null })}>
             <option value="">없음</option>
             {titles.map((t) => <option key={t} value={t}>{t}</option>)}
           </select>
         </Field>
-        <Field label="코스튬">
+        <Field label="직업 스킨 (해금된 것만)">
           <select className="input" value={c.equippedOutfit ?? ''} onChange={(e) => set({ equippedOutfit: e.target.value || null })}>
-            <option value="">기본 옷</option>
+            <option value="">견습생 (기본)</option>
             {outfits.map((o) => <option key={o.key} value={o.key} disabled={!o.ok}>{o.ok ? '' : '🔒 '}{o.label}</option>)}
           </select>
         </Field>
@@ -65,7 +59,7 @@ export function EditorCharacter() {
         <div className="flex justify-end">
           <button className="btn btn-gold" disabled={!dirty} onClick={() => saveCharacter(c, settings)}>{dirty ? '저장' : '저장됨'}</button>
         </div>
-        <p className="text-xs text-muted">픽셀 캐릭터는 코드로 그린 16×24 스프라이트입니다. 나중에 PNG 에셋을 주시면 <code>src/pixel/sprites.ts</code> 레지스트리 항목만 바꿔 교체할 수 있습니다.</p>
+        <p className="text-xs text-muted">픽셀 캐릭터는 코드로 그린 24×32 스프라이트입니다. 전체 목록은 편집 → 도감 탭에서 볼 수 있습니다. 나중에 PNG 에셋을 주시면 <code>src/pixel/sprites.ts</code> 레지스트리 항목만 바꿔 교체할 수 있습니다.</p>
       </div>
     </div>
   )

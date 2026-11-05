@@ -44,7 +44,7 @@ function DomainCard({ domain, onSave, onDelete }: { domain: Domain; onSave: (d: 
       <div className="text-xs text-muted mt-2">전직 사다리</div>
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
-          <thead className="text-muted"><tr><th className="text-left p-1">차수</th><th className="text-left p-1">직업명</th><th className="text-left p-1">칭호</th><th className="text-left p-1">필요 달성 스킬</th><th className="text-left p-1">코스튬</th><th /></tr></thead>
+          <thead className="text-muted"><tr><th className="text-left p-1">차수</th><th className="text-left p-1">직업명</th><th className="text-left p-1">칭호</th><th className="text-left p-1">필요 달성 스킬</th><th className="text-left p-1">직업 스킨</th><th /></tr></thead>
           <tbody>
             {draft.tiers.map((t, i) => (
               <tr key={i}>

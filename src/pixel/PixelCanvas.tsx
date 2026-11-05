@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react'
 import type { Appearance } from '@/types/model'
-import { spriteByKey } from './sprites'
+import { DEFAULT_OUTFIT, spriteByKey } from './sprites'
 import { CANVAS_H, CANVAS_W, type PaletteRole, type SpriteDef, type SpriteSource } from './types'
 
 export interface PixelCanvasProps {
   appearance: Appearance
+  /** 직업 스킨 키 (없으면 견습생) */
   outfit?: string | null
   accessory?: string | null
   scale?: number
@@ -66,8 +67,8 @@ function drawSource(ctx: CanvasRenderingContext2D, src: SpriteSource, frame: num
   }
 }
 
-/** 레이어 합성: body → hair → outfit → accessory */
-export function PixelCanvas({ appearance, outfit, accessory, scale = 6, animate = true, className }: PixelCanvasProps) {
+/** 레이어 합성: 직업 스킨(전신) → 액세서리 */
+export function PixelCanvas({ appearance, outfit, accessory, scale = 5, animate = true, className }: PixelCanvasProps) {
   const ref = useRef<HTMLCanvasElement>(null)
   const frameRef = useRef(0)
 
@@ -77,9 +78,7 @@ export function PixelCanvas({ appearance, outfit, accessory, scale = 6, animate 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
     const layers: (SpriteDef | undefined)[] = [
-      spriteByKey('base'),
-      spriteByKey(`hair_${appearance.hairStyle}`),
-      spriteByKey(outfit),
+      spriteByKey(outfit) ?? spriteByKey(DEFAULT_OUTFIT),
       spriteByKey(accessory),
     ]
     const render = () => {

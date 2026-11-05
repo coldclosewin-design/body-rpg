@@ -5,6 +5,7 @@ const TABS = [
   { to: 'skills', label: '스킬·과제' },
   { to: 'seasons', label: '시즌' },
   { to: 'character', label: '캐릭터' },
+  { to: 'gallery', label: '도감' },
   { to: 'data', label: '데이터' },
 ]
 

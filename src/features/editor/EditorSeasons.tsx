@@ -59,7 +59,7 @@ function SeasonCard({ season, onSave, onDelete }: { season: Season; onSave: (s: 
                   const type = e.target.value as 'title' | 'outfit' | 'accessory' | ''
                   setTier(i, { reward: type ? { type, value: type === 'title' ? '' : (type === 'outfit' ? outfits[0].key : accs[0].key), label: '' } : null })
                 }}>
-                  <option value="">없음</option><option value="title">칭호</option><option value="outfit">코스튬</option><option value="accessory">액세서리</option>
+                  <option value="">없음</option><option value="title">칭호</option><option value="outfit">직업 스킨</option><option value="accessory">액세서리</option>
                 </select>
               </td>
               <td className="p-1">

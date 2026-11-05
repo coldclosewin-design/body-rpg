@@ -1,6 +1,6 @@
 /**
  * 스프라이트 소스 두 종류.
- * - pixelmap: 코드로 그린 문자 픽셀맵 (초기 버전)
+ * - pixelmap: 코드로 그린 문자 픽셀맵 (src/pixel/parts.ts + characters.ts 에서 합성)
  * - png: 나중에 사용자가 제공하는 스프라이트 시트 (public/sprites/*.png)
  * 렌더러(PixelCanvas)는 둘 다 처리하므로 sprites.ts 레지스트리 항목만 바꾸면 교체된다.
  */
@@ -16,7 +16,6 @@ export interface PixelMap {
   frames: string[][]
   /** 문자 → 색상(hex) 또는 팔레트 역할 */
   palette: Record<string, string | PaletteRole>
-  /** 전체 캔버스(16x24) 기준 오프셋 */
   offsetX?: number
   offsetY?: number
 }
@@ -33,14 +32,16 @@ export interface PngSheet {
 
 export type SpriteSource = PixelMap | PngSheet
 
-export type Layer = 'body' | 'hair' | 'outfit' | 'accessory' | 'effect'
+/** outfit = 캐릭터 전신 스킨(직업), accessory = 머리 장식 */
+export type Layer = 'outfit' | 'accessory'
 
 export interface SpriteDef {
   key: string
   label: string
   layer: Layer
+  desc?: string
   source: SpriteSource
 }
 
-export const CANVAS_W = 16
-export const CANVAS_H = 24
+export const CANVAS_W = 24
+export const CANVAS_H = 32
