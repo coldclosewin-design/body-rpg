@@ -10,6 +10,8 @@ export function TodayPage() {
   const { progress, seasonStat, streak, todayXp, today } = derived
   const open = progress.filter((p) => !p.done)
   const done = progress.filter((p) => p.done)
+  /* 한 번이라도 스트릭이 있었는데 지금 0이면 나태 고블린 등장 */
+  const goblin = streak.current === 0 && streak.best > 0
 
   return (
     <div className="space-y-3">
@@ -34,6 +36,16 @@ export function TodayPage() {
           )}
         </div>
       </div>
+
+      {goblin && (
+        <div className="card flex items-center gap-3 border border-mint/60">
+          <PixelCanvas appearance={world.character.appearance} outfit="goblin" scale={3} />
+          <div className="text-sm space-y-1">
+            <div className="font-bold text-mint">나태 고블린이 나타났다!</div>
+            <div className="text-xs text-muted">스트릭이 끊겼습니다 (최고 {streak.best}일). 오늘 과제를 하나 완료하면 쫓아낼 수 있습니다.</div>
+          </div>
+        </div>
+      )}
 
       {progress.length === 0 && <Empty>활성 스킬에 과제가 없습니다. <Link to="/edit/skills" className="text-sky">편집에서 추가</Link></Empty>}
 
