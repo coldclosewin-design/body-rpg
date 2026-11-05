@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useWorld } from '@/app/world'
 import { Field, confirmDelete } from '@/components/ui'
-import { addDays, todayKey } from '@/game'
+import { addDays, applyDefaultCurve, defaultSeasonTierXp, todayKey, BASE_SEASON_TIER_XP, STREAK_BONUS_EVERY, STREAK_BONUS_XP } from '@/game'
 import { spritesOfLayer } from '@/pixel/sprites'
 import type { Season, SeasonTier } from '@/types/model'
 
@@ -12,19 +12,20 @@ export function EditorSeasons() {
   const add = () => {
     const last = seasons[0]
     const start = last ? addDays(last.endDate, 1) : todayKey()
+    const end = addDays(start, 29)
+    const curve = defaultSeasonTierXp(start, end)
     upsertSeason({
-      id: newId(), name: `시즌 ${seasons.length + 1}`, startDate: start, endDate: addDays(start, 29),
-      tiers: last ? last.tiers.map((t) => ({ ...t })) : [
-        { tier: 1, xp: 100, reward: { type: 'title', value: '참가자', label: '칭호: 참가자' } },
-        { tier: 2, xp: 300, reward: { type: 'accessory', value: 'headband', label: '헤어밴드' } },
-        { tier: 3, xp: 600, reward: null },
-      ],
+      id: newId(), name: `시즌 ${seasons.length + 1}`, startDate: start, endDate: end,
+      tiers: last ? last.tiers.map((t, i) => ({ ...t, xp: curve[i] ?? t.xp })) : curve.map((xp, i) => ({
+        tier: i + 1, xp,
+        reward: i === 0 ? { type: 'title', value: '참가자', label: '칭호: 참가자' } : i === 1 ? { type: 'accessory', value: 'headband', label: '헤어밴드' } : null,
+      })),
     })
   }
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-muted">시즌 기간 동안 얻은 XP 로 티어가 오르고 보상(칭호·코스튬·액세서리)이 해금됩니다. 보상은 시즌이 끝나도 영구 보관됩니다. 새 시즌은 직전 시즌 티어표를 복제해 만듭니다.</p>
+      <p className="text-xs text-muted">시즌 기간 동안 얻은 XP 로 티어가 오르고 보상(칭호·코스튬·액세서리)이 해금됩니다. 보상은 시즌이 끝나도 영구 보관됩니다. 새 시즌은 직전 시즌 보상을 복제하고 필요 XP 는 기본 곡선(30일 기준 {BASE_SEASON_TIER_XP.join('/')}, 길이에 비례)으로 채웁니다. 스트릭 {STREAK_BONUS_EVERY}일마다 시즌 XP +{STREAK_BONUS_XP} 보너스가 붙습니다.</p>
       {seasons.map((s) => <SeasonCard key={s.id} season={s} onSave={upsertSeason} onDelete={() => confirmDelete(s.name) && deleteSeason(s.id)} />)}
       <button className="btn btn-mint" onClick={add}>+ 시즌 추가</button>
     </div>
@@ -78,6 +79,7 @@ function SeasonCard({ season, onSave, onDelete }: { season: Season; onSave: (s: 
       </table>
       <div className="flex gap-2 flex-wrap">
         <button className="btn btn-ghost text-xs" onClick={() => set({ tiers: [...d.tiers, { tier: d.tiers.length + 1, xp: (d.tiers.at(-1)?.xp ?? 0) + 300, reward: null }] })}>+ 티어 추가</button>
+        <button className="btn btn-ghost text-xs" title="보상은 그대로 두고 필요 XP 만 시즌 길이에 맞는 기본 곡선으로" onClick={() => setD(applyDefaultCurve(d))}>기본 곡선 적용</button>
         <div className="flex-1" />
         <button className="btn btn-ghost text-xs text-accent" onClick={onDelete}>시즌 삭제</button>
         <button className="btn btn-gold text-xs" disabled={!dirty} onClick={() => onSave({ ...d, tiers: [...d.tiers].sort((a, b) => a.tier - b.tier) })}>{dirty ? '저장' : '저장됨'}</button>

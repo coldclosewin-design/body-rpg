@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useWorld } from '@/app/world'
 import { Bar, Empty, PageTitle } from '@/components/ui'
-import { cadenceLabel, metricLabel, weekdayLabel, type TaskProgress } from '@/game'
+import { cadenceLabel, metricLabel, weekdayLabel, STREAK_BONUS_XP, type TaskProgress } from '@/game'
 import { PixelCanvas } from '@/pixel/PixelCanvas'
 import { Link } from 'react-router'
 
@@ -22,7 +22,13 @@ export function TodayPage() {
         <PixelCanvas appearance={world.character.appearance} outfit={world.character.equippedOutfit} accessory={world.character.equippedAccessory} scale={3} />
         <div className="flex-1 min-w-0 text-sm space-y-1">
           <div className="flex justify-between"><span>오늘 XP</span><span className="text-gold">+{todayXp}</span></div>
-          <div className="flex justify-between"><span>🔥 스트릭</span><span>{streak.current}일 {streak.activeToday ? '' : '(오늘 아직)'}</span></div>
+          <div className="flex justify-between">
+            <span>🔥 스트릭</span>
+            <span>
+              {streak.current}일 {streak.activeToday ? '' : '(오늘 아직)'}
+              <span className="text-[10px] text-muted"> · {streak.bonusToday ? <span className="text-gold">보너스 +{STREAK_BONUS_XP}!</span> : `보너스까지 ${streak.daysToBonus}일`}</span>
+            </span>
+          </div>
           {seasonStat ? (
             <div>
               <div className="flex justify-between text-xs text-muted">

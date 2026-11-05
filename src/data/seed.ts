@@ -1,4 +1,5 @@
 import { addDays, todayKey } from '@/game/dates'
+import { defaultSeasonTierXp } from '@/game/season'
 import { CharacterSchema, SettingsSchema, uid, type World } from '@/types/model'
 
 /** 첫 실행 시 자동 생성되는 예시 세계관. 편집기에서 자유롭게 바꿀 수 있다. */
@@ -11,6 +12,7 @@ export function makeSeedWorld(): World {
   const nextMonth = new Date(monthStart + 'T00:00:00')
   nextMonth.setMonth(nextMonth.getMonth() + 1)
   const monthEnd = addDays(`${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}-01`, -1)
+  const curve = defaultSeasonTierXp(monthStart, monthEnd)
 
   return {
     domains: [
@@ -49,11 +51,11 @@ export function makeSeedWorld(): World {
       {
         id: uid(), name: '시즌 1', startDate: monthStart, endDate: monthEnd,
         tiers: [
-          { tier: 1, xp: 100, reward: { type: 'title', value: '시즌1 참가자', label: '칭호: 시즌1 참가자' } },
-          { tier: 2, xp: 300, reward: { type: 'accessory', value: 'headband', label: '헤어밴드' } },
-          { tier: 3, xp: 600, reward: { type: 'accessory', value: 'sunglasses', label: '선글라스' } },
-          { tier: 4, xp: 1000, reward: { type: 'outfit', value: 'champion', label: '챔피언 유니폼' } },
-          { tier: 5, xp: 1500, reward: { type: 'title', value: '시즌1 챔피언', label: '칭호: 시즌1 챔피언' } },
+          { tier: 1, xp: curve[0], reward: { type: 'title', value: '시즌1 참가자', label: '칭호: 시즌1 참가자' } },
+          { tier: 2, xp: curve[1], reward: { type: 'accessory', value: 'headband', label: '헤어밴드' } },
+          { tier: 3, xp: curve[2], reward: { type: 'accessory', value: 'sunglasses', label: '선글라스' } },
+          { tier: 4, xp: curve[3], reward: { type: 'outfit', value: 'champion', label: '챔피언 유니폼' } },
+          { tier: 5, xp: curve[4], reward: { type: 'title', value: '시즌1 챔피언', label: '칭호: 시즌1 챔피언' } },
         ],
       },
     ],

@@ -5,7 +5,7 @@ import { taskProgress } from './progress'
 import { skillMastery } from './mastery'
 import { domainStatus } from './jobTier'
 import { activeSeason, seasonStatus } from './season'
-import { computeStreak } from './streak'
+import { computeStreak, streakBonuses } from './streak'
 import { taskBadges } from './badges'
 
 export * from './dates'
@@ -28,8 +28,9 @@ export function deriveWorld(world: World, today = todayKey()) {
   const progress = activeTasks.map((t) => taskProgress(t, world.logs, today, wso))
   const mastery = world.skills.map((s) => skillMastery(s, world.tasks, world.logs, today, wso))
   const domains = [...world.domains].sort((a, b) => a.order - b.order).map((d) => domainStatus(d, world.skills, xpEvents))
+  const bonuses = streakBonuses(xpEvents)
   const season = activeSeason(world.seasons, today)
-  const seasonStat = season ? seasonStatus(season, xpEvents, today) : null
+  const seasonStat = season ? seasonStatus(season, xpEvents, today, bonuses) : null
   const streak = computeStreak(xpEvents, today)
   const badges = taskBadges(world.tasks, world.logs)
   const todayXp = sumXp(xpEvents.filter((e) => e.date === today))
@@ -49,9 +50,9 @@ export function deriveWorld(world: World, today = todayKey()) {
   // 과거 시즌의 보상도 포함
   for (const s of world.seasons) {
     if (season && s.id === season.id) continue
-    for (const r of seasonStatus(s, xpEvents, today).unlockedRewards) unlocked.add(`${r.type}:${r.value}`)
+    for (const r of seasonStatus(s, xpEvents, today, bonuses).unlockedRewards) unlocked.add(`${r.type}:${r.value}`)
   }
 
-  return { today, xpEvents, activeTasks, progress, mastery, domains, season, seasonStat, streak, badges, todayXp, totalXp, unlocked: [...unlocked] }
+  return { today, xpEvents, bonuses, activeTasks, progress, mastery, domains, season, seasonStat, streak, badges, todayXp, totalXp, unlocked: [...unlocked] }
 }
 export type Derived = ReturnType<typeof deriveWorld>

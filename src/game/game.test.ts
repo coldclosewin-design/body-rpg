@@ -5,8 +5,8 @@ import { computeXpEvents } from './xp'
 import { taskProgress } from './progress'
 import { skillMastery } from './mastery'
 import { domainStatus } from './jobTier'
-import { activeSeason, seasonStatus } from './season'
-import { computeStreak } from './streak'
+import { activeSeason, applyDefaultCurve, defaultSeasonTierXp, seasonStatus } from './season'
+import { computeStreak, streakBonuses } from './streak'
 import { taskBadges } from './badges'
 
 const task = (over: Partial<Task> = {}): Task => ({
@@ -137,6 +137,19 @@ describe('season', () => {
     expect(st.unlockedRewards.map((r) => r.value)).toEqual(['참가자'])
     expect(st.daysLeft).toBe(25)
   })
+  it('스트릭 보너스는 시즌 기간 안의 것만 더해진다', () => {
+    const ev = computeXpEvents([task()], [log('t1', '2026-11-01', 10)])
+    const st = seasonStatus(season, ev, '2026-11-05', [{ date: '2026-11-01', xp: 50, streakDay: 7 }, { date: '2026-12-01', xp: 50, streakDay: 14 }])
+    expect(st.xp).toBe(60)
+    expect(st.bonusXp).toBe(50)
+  })
+  it('기본 티어 곡선은 시즌 길이에 비례', () => {
+    expect(defaultSeasonTierXp('2026-11-01', '2026-11-30')).toEqual([80, 250, 500, 800, 1100])
+    expect(defaultSeasonTierXp('2026-11-01', '2026-12-30')).toEqual([160, 500, 1000, 1600, 2200])
+    const fixed = applyDefaultCurve(season)
+    expect(fixed.tiers.map((t) => t.xp)).toEqual([80, 250])
+    expect(fixed.tiers[1].reward?.value).toBe('headband')
+  })
   it('activeSeason 은 오늘을 포함하는 시즌', () => {
     expect(activeSeason([season], '2026-11-05')?.id).toBe('se1')
     expect(activeSeason([season], '2026-12-01')).toBeNull()
@@ -150,6 +163,25 @@ describe('streak', () => {
     expect(computeStreak(ev, '2026-11-03')).toMatchObject({ current: 3, best: 3, activeToday: true })
     expect(computeStreak(ev, '2026-11-04')).toMatchObject({ current: 3, activeToday: false })
     expect(computeStreak(ev, '2026-11-05').current).toBe(0)
+  })
+  it('보너스 카운트다운: 오늘 포함 남은 일수, 7일째 달성하면 bonusToday', () => {
+    const t = task()
+    const days = Array.from({ length: 7 }, (_, i) => log('t1', addDays('2026-11-01', i), 10))
+    const ev = computeXpEvents([t], days)
+    expect(computeStreak(ev, '2026-11-07')).toMatchObject({ current: 7, bonusToday: true, daysToBonus: 0 })
+    expect(computeStreak(ev, '2026-11-08')).toMatchObject({ current: 7, activeToday: false, daysToBonus: 7 })
+    expect(computeStreak(computeXpEvents([t], days.slice(0, 3)), '2026-11-03')).toMatchObject({ current: 3, daysToBonus: 4 })
+    expect(computeStreak(computeXpEvents([t], days.slice(0, 6)), '2026-11-07')).toMatchObject({ current: 6, activeToday: false, daysToBonus: 1 })
+    expect(computeStreak([], '2026-11-07')).toMatchObject({ current: 0, daysToBonus: 7 })
+  })
+  it('streakBonuses: 7일마다 +50, 끊기면 다시 1부터', () => {
+    const t = task()
+    const run = (from: string, n: number) => Array.from({ length: n }, (_, i) => log('t1', addDays(from, i), 10))
+    expect(streakBonuses(computeXpEvents([t], run('2026-11-01', 14)))).toEqual([
+      { date: '2026-11-07', xp: 50, streakDay: 7 }, { date: '2026-11-14', xp: 50, streakDay: 14 },
+    ])
+    // 6일 하고 하루 쉬고 6일 → 보너스 없음
+    expect(streakBonuses(computeXpEvents([t], [...run('2026-11-01', 6), ...run('2026-11-08', 6)]))).toEqual([])
   })
 })
 
