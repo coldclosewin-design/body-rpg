@@ -453,3 +453,200 @@ export const ROPE = part([
   'KAAAK',
   '.KKK.',
 ], 21, 1)
+
+// ───────────────────────── 분야 스킨 파츠: 토커·사운드메이커·슬리퍼 ─────────────────────────
+/** 감은 눈 (수면용). HEAD 의 눈 2줄을 덮어 1px 로 줄인다 */
+export const CLOSED_EYES = part([
+  '.....KSSSSSSSSSSSSK.....',
+  '.....KSSSEESSSEESSK.....',
+], 8)
+
+/** 동그란 안경. 렌즈 테 K, 눈은 HEAD 의 것을 그대로 쓴다 */
+export const ROUND_GLASSES = part([
+  '.......KKKKK.KKKKK......',
+  '.......KWEWKKKWEWK......',
+  '.......KWEWK.KWEWK......',
+  '.......KKKKK.KKKKK......',
+], 7)
+
+/** 수면 안대 (1 주색 2 음영). 눈을 완전히 가린다 */
+export const EYE_MASK = (c1: string, c2: string) => part([
+  '.....KSKKKKKKKKKKSK.....',
+  '.....KKK11111111KKK.....',
+  '.....KKK12222221KKK.....',
+  '.....KSKKKKKKKKKKSK.....',
+], 7, 0, { 1: c1, 2: c2 })
+
+/** 수면모자: 돔 + 흰 털 밴드 + 오른쪽으로 늘어진 꼬리와 방울 */
+export const NIGHTCAP = (c1: string, c2: string) => part([
+  '........KKKKKKKK........',
+  '.......K11111111K.......',
+  '......K111111111111KKKKK',
+  '.....K11111111111112222K',
+  '.....K122222222221KK22K.',
+  '.....KWWWWWWWWWWWWK.K2K.',
+  '.....KLLLLLLLLLLLLK.KWWK',
+  '...................KWWWK',
+  '...................KWLLK',
+  '....................KKK.',
+], 1, 0, { 1: c1, 2: c2 })
+
+/** 챙 넓은 음유시인 모자 (FEATHER 와 같이 쓴다) */
+export const FEATHER_CAP = (c1: string, c2: string) => part([
+  '........KKKKKKKK........',
+  '.......K11111111K.......',
+  '......K1111111111K......',
+  '.....K111111111111K.....',
+  '....KK122222222221KK....',
+  '...K2222222222222222K...',
+  '....KKKKKKKKKKKKKKKK....',
+], 1, 0, { 1: c1, 2: c2 })
+
+/** 모자 오른쪽에 꽂은 붉은 깃털 */
+export const FEATHER = part([
+  '....KK',
+  '..KRRK',
+  '.KRRK.',
+  'KRrK..',
+  'KrK...',
+], 0, 17)
+
+/** 큰 헤드폰: 머리 위 밴드 + 양쪽 컵 */
+export const HEADPHONES = (c1: string, c2: string) => part([
+  '........KKKKKKKK........',
+  '......KK11111111KK......',
+  '.....K11KKKKKKKK11K.....',
+  '.....K1K........K1K.....',
+  '.....K1K........K1K.....',
+  '...KKKKK........KKKKK...',
+  '..K1111K........K1111K..',
+  '..K1221K........K1221K..',
+  '..K1221K........K1221K..',
+  '..K1111K........K1111K..',
+  '...KKKK..........KKKK...',
+], 0, 0, { 1: c1, 2: c2 })
+
+/** 줄무늬 잠옷 상의 (1 주색 2 음영 3 줄무늬) */
+export const PAJAMA = (c1: string, c2: string, stripe: string) => part([
+  '........KKKSSKKK........',
+  '.......K13131313K.......',
+  '......K1131313131K......',
+  '.....K111313131311K.....',
+  '.....K1K13131313K1K.....',
+  '.....KSK13131313KSK.....',
+  '.....KSK13131313KSK.....',
+  '....KSSK23232323KSSK....',
+  '....KKKK22222222KKKK....',
+  '........KKKKKKKK........',
+], 15, 0, { 1: c1, 2: c2, 3: stripe })
+
+/** 셔츠 위 넥타이 */
+export const TIE = part([
+  'KRRK',
+  'KRRK',
+  'KRrK',
+  'KRrK',
+  '.KK.',
+], 16, 10)
+
+// ── 손에 든 소품 (몸통 뒤·앞 순서는 캐릭터 정의에서 정한다) ──
+/** 가슴에 꼭 안은 베개 */
+export const PILLOW = part([
+  '..KKKKKKKK..',
+  '.KWWWWWWWWK.',
+  'KWWWWWWWWWWK',
+  'KWWWWWWWWWWK',
+  'KWLLLLLLLLWK',
+  '.KLLLLLLLLK.',
+  '..KKKKKKKK..',
+], 17, 6)
+
+/** 펼친 책 */
+export const BOOK = part([
+  'KKKKKKKKKKKK',
+  'KWWWWKKWWWWK',
+  'KWLLWKKWLLWK',
+  'KWWWWKKWWWWK',
+  'KWLLWKKWLLWK',
+  'KKKKKKKKKKKK',
+], 18, 6)
+
+/** 미니 신디사이저 (노브 4개 + 건반) */
+export const SYNTH = part([
+  'KKKKKKKKKK',
+  'KXRXGXYXBK',
+  'KWWKWWKWWK',
+  'KWWWWWWWWK',
+  'KKKKKKKKKK',
+], 19, 7)
+
+/** 손마이크 */
+export const MIC = part([
+  '.KK.',
+  'KLLK',
+  'KLlK',
+  'KllK',
+  '.KK.',
+  ...Array(8).fill('.KXK'),
+], 12, 19)
+
+/** 류트: 세로 목 + 둥근 몸통. 몸통 파츠 뒤에 그려 오른손 앞에 오게 한다 */
+export const LUTE = part([
+  '..KKKK.',
+  '..KNNnK',
+  '..KNNnK',
+  '..KNnK.',
+  '..KNnK.',
+  '..KNnK.',
+  '..KNnK.',
+  '..KNnK.',
+  '..KNnK.',
+  '.KKKKK.',
+  'KAALLaK',
+  'KAALLaK',
+  'KAXLLXK',
+  'KAXLLXK',
+  'KAALLaK',
+  'KaaLLaK',
+  '.KKKKK.',
+], 8, 16)
+
+// ── 효과 ──
+/** 왼쪽 위 말풍선 (… ) */
+export const SPEECH_BUBBLE = part([
+  '.KKKKK.',
+  'KWWWWWK',
+  'KWXWXWK',
+  'KWWWWWK',
+  '.KKKWKK',
+  '....KK.',
+], 0, 0)
+
+/** 왼쪽 위로 흩날리는 음표 2개 */
+export const NOTES = part([
+  '..Y..',
+  '..YY.',
+  '..Y..',
+  'YYY..',
+  'YYY..',
+  '.....',
+  '...Y.',
+  '...YY',
+  '...Y.',
+  '.YYY.',
+  '.YYY.',
+], 0, 0)
+
+/** 왼쪽 위 zZ */
+export const ZZZ = part([
+  'WWWWW',
+  '...W.',
+  '..W..',
+  '.W...',
+  'WWWWW',
+  '.....',
+  '.WWWW',
+  '...W.',
+  '..W..',
+  '.WWWW',
+], 0, 0)

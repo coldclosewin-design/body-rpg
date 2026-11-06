@@ -6,12 +6,12 @@
 ```
 design/
 ├─ README.md             이 문서
-├─ character-sheet.png   캐릭터 15종 미리보기 시트 (npm run sheet 로 재생성)
+├─ character-sheet.png   캐릭터 21종 미리보기 시트 (npm run sheet 로 재생성)
 ├─ pixel/                픽셀 캐릭터 시스템 (앱 의존성 없음, Node/브라우저 공용)
 │  ├─ types.ts           캔버스 규격 24×32, PixelMap / PngSheet / SpriteDef 타입
 │  ├─ palette.ts         문자 → 색 팔레트, 기본 외형 색, toPixelMap()
-│  ├─ parts.ts           파츠 43종 (머리·머리카락·모자·몸통·다리·소품) + compose()
-│  ├─ characters.ts      파츠를 조합한 캐릭터 15종
+│  ├─ parts.ts           파츠 60종 (머리·머리카락·모자·몸통·다리·소품·효과) + compose()
+│  ├─ characters.ts      파츠를 조합한 캐릭터 21종
 │  └─ render-sheet.ts    시트 PNG 생성 스크립트
 └─ theme/
    └─ theme.css          Tailwind v4 @theme 토큰(색·폰트) + 픽셀 UI 컴포넌트 클래스
@@ -48,15 +48,15 @@ design/
 
 ```
 CAPE/WAVES 같은 뒤 배경 → 다리(PANTS/SHORTS) → 몸통(SHIRT/JACKET/TANK/BARE/ROBE/ARMOR)
-→ 머리(HEAD) → 수염 → 머리카락(HAIR_*) → 모자(HELMET/HOOD/POINTED_HAT/SWIM_CAP) → 얼굴 장식(HEADBAND/SUNGLASSES/GOGGLES/CROWN)
-→ 손 소품(SWORD/SHIELD/DUMBBELL/BALL/BOW/TORCH/STAFF/AXE/CLUB/ROPE) → 효과(SPEED_LINES)
+→ 머리(HEAD) → 수염 → 머리카락(HAIR_*) → 모자(HELMET/HOOD/POINTED_HAT/SWIM_CAP/NIGHTCAP/FEATHER_CAP/HEADPHONES) → 얼굴 장식(HEADBAND/SUNGLASSES/GOGGLES/CROWN/ROUND_GLASSES/EYE_MASK/CLOSED_EYES)
+→ 손 소품(SWORD/SHIELD/DUMBBELL/BALL/BOW/TORCH/STAFF/AXE/CLUB/ROPE/MIC/LUTE/BOOK/PILLOW/SYNTH) → 효과(SPEED_LINES/SPEECH_BUBBLE/NOTES/ZZZ)
 ```
 
 새 파츠를 그릴 때 규칙: 행 길이는 파츠 안에서 일정하게, 전폭 파츠는 24칸. 외곽선을 먼저 닫고 안을 채운다. 가는 소품(활·지팡이)은 2px 이상 굵기로, 1px 선은 축소 화면에서 사라진다.
 
 ### 캐릭터 (`characters.ts`)
 
-`{ key, label, desc, parts, recolor? }` 한 줄이 캐릭터 하나. 현재 15종:
+`{ key, label, desc, parts, recolor? }` 한 줄이 캐릭터 하나. 현재 21종:
 
 | key | 이름 | 용도 |
 |---|---|---|
@@ -66,6 +66,9 @@ CAPE/WAVES 같은 뒤 배경 → 다리(PANTS/SHORTS) → 몸통(SHIRT/JACKET/TA
 | brawler / lifter / knight | 브롤러 / 리프터 / 철의 기사 | 리프터 2·3·4차 |
 | champion | 챔피언 | 시즌 보상 |
 | monk / swimmer / sage / climber / healer | 수행자 / 스위머 / 현자 / 클라이머 / 힐러 | 요가·수영·기록·클라이밍·회복 분야용 예비 |
+| bookworm / speaker | 책벌레 / 스피커 | 토커(영어) 중간·완성 단계 |
+| dj / bard | 디제이 / 바드 | 사운드메이커 중간·완성 단계 |
+| napper / dreamer | 낮잠꾼 / 드리머 | 슬리퍼(수면) 중간·완성 단계 |
 | goblin | 나태 고블린 | 적. 스트릭이 끊기면 등장 (`recolor` 로 피부를 초록으로) |
 
 미리보기: `npm run sheet` → `design/character-sheet.png`.

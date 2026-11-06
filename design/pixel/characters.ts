@@ -68,6 +68,33 @@ export const CHARACTERS: CharacterDef[] = [
     key: 'healer', label: '힐러', desc: '회복의 수호자. 긴 머리, 흰 로브, 초록 수정 지팡이.',
     parts: [P.HEAD, P.HAIR_LONG, P.ROBE('W', 'x', 'G'), P.STAFF('G', 'g')],
   },
+  // ── 토커(영어) ──
+  {
+    key: 'bookworm', label: '책벌레', desc: '토커 중간 단계. 동그란 안경에 펼친 책. 읽고 또 읽는다.',
+    parts: [P.HEAD, P.HAIR_SHORT, P.ROUND_GLASSES, P.SHIRT('G', 'g'), P.PANTS('N', 'n', 'X'), P.BOOK],
+  },
+  {
+    key: 'speaker', label: '스피커', desc: '토커의 완성. 흰 셔츠에 넥타이, 손마이크와 말풍선.',
+    parts: [P.HEAD, P.HAIR_SHORT, P.SHIRT('W', 'x'), P.TIE, P.PANTS('X', 'x', 'N'), P.MIC, P.SPEECH_BUBBLE],
+  },
+  // ── 사운드메이커 ──
+  {
+    key: 'dj', label: '디제이', desc: '사운드메이커 중간 단계. 큰 헤드폰, 선글라스, 미니 신디.',
+    parts: [P.HEAD, P.HAIR_SHORT, P.SUNGLASSES, P.HEADPHONES('R', 'r'), P.SHIRT('X', 'x'), P.PANTS('B', 'b', 'W'), P.SYNTH],
+  },
+  {
+    key: 'bard', label: '바드', desc: '사운드메이커의 완성. 깃털 모자, 류트, 흩날리는 음표.',
+    parts: [P.HEAD, P.FEATHER_CAP('G', 'g'), P.FEATHER, P.SHIRT('M', 'm'), P.PANTS('N', 'n', 'X'), P.LUTE, P.NOTES],
+  },
+  // ── 슬리퍼 ──
+  {
+    key: 'napper', label: '낮잠꾼', desc: '슬리퍼 중간 단계. 안대를 쓰고 베개를 꼭 안았다.',
+    parts: [P.HEAD, P.HAIR_SHORT, P.EYE_MASK('R', 'r'), P.SHIRT('C', 'c'), P.PANTS('x', 'x', 'W'), P.PILLOW],
+  },
+  {
+    key: 'dreamer', label: '드리머', desc: '슬리퍼의 완성. 수면모자와 줄무늬 잠옷, 머리 위로 zZ.',
+    parts: [P.HEAD, P.CLOSED_EYES, P.NIGHTCAP('M', 'm'), P.PAJAMA('B', 'b', 'W'), P.PANTS('B', 'b', 'A'), P.ZZZ],
+  },
   {
     key: 'goblin', label: '나태 고블린', desc: '스트릭이 끊기면 나타나는 훼방꾼. 초록 피부, 뾰족 귀, 몽둥이.',
     parts: [P.HEAD, P.EAR_L, P.EAR_R, P.TANK('N', 'n'), P.SHORTS('n', 'G'), P.CLUB],
