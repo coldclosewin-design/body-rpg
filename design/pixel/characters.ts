@@ -95,6 +95,23 @@ export const CHARACTERS: CharacterDef[] = [
     key: 'dreamer', label: '드리머', desc: '슬리퍼의 완성. 수면모자와 줄무늬 잠옷, 머리 위로 zZ.',
     parts: [P.HEAD, P.CLOSED_EYES, P.NIGHTCAP('M', 'm'), P.PAJAMA('B', 'b', 'W'), P.PANTS('B', 'b', 'A'), P.ZZZ],
   },
+  // ── 전투 직업: 미배정 시즌 보상 스킨 ──
+  {
+    key: 'warrior', label: '전사', desc: '뿔 투구와 갈색 가죽 갑옷을 걸치고 커다란 도끼로 전장을 누빈다.',
+    parts: [P.PANTS('X', 'P', 'n'), P.LEATHER_ARMOR('N', 'n'), P.HEAD, P.HAIR_SHORT, P.HORNED_HELMET('X', 'P'), P.BATTLE_AXE],
+  },
+  {
+    key: 'archer', label: '궁수', desc: '파란 깃털 모자와 등 뒤 화살통을 갖추고 금빛 반곡궁으로 먼 표적을 겨눈다.',
+    parts: [P.QUIVER, P.PANTS('P', 'P', 'N'), P.JACKET('C', 'c'), P.HEAD, P.HAIR_SHORT, P.FEATHER_CAP('B', 'b'), P.FEATHER, P.RECURVE_BOW],
+  },
+  {
+    key: 'mage', label: '마법사', desc: '푸른 뾰족 모자와 긴 로브를 두르고 붉은 구슬 지팡이로 금빛 별을 피워 낸다.',
+    parts: [P.PANTS('B', 'b', 'N'), P.ROBE('B', 'b', 'Y'), P.HEAD, P.HAIR_SHORT, P.POINTED_HAT('B', 'b'), P.ORB_STAFF('R', 'r'), P.SPARKLES],
+  },
+  {
+    key: 'rogue', label: '도적', desc: '눈만 드러낸 복면에 어두운 가죽 옷과 허리띠를 두르고 양손 단검으로 그림자 속을 누빈다.',
+    parts: [P.PANTS('X', 'P', 'P'), P.LEATHER_ARMOR('X', 'P'), P.HEAD, P.HOOD('X', 'P'), P.FACE_WRAP('X', 'P'), P.DAGGER_L, P.DAGGER_R],
+  },
   {
     key: 'goblin', label: '나태 고블린', desc: '스트릭이 끊기면 나타나는 훼방꾼. 초록 피부, 뾰족 귀, 몽둥이.',
     parts: [P.HEAD, P.EAR_L, P.EAR_R, P.TANK('N', 'n'), P.SHORTS('n', 'G'), P.CLUB],
