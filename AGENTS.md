@@ -32,6 +32,7 @@ npm run dev          # http://localhost:5173
 ## 픽셀 에셋 작업 규칙 (가장 자주 맡기는 일)
 
 규격 전체는 `design/README.md` 2절을 먼저 읽는다. 아래는 그중 실수하기 쉬운 것만 추린 것.
+새 직업 스킨을 추가하는 전체 절차(파츠 → 캐릭터 → 검증 → 시트 → README → PR)는 저장소 스킬 `.agents/skills/pixel-skin/SKILL.md` 에 있다. Codex 에서는 `$pixel-skin <캐릭터 목록과 외형>` 으로 호출한다.
 
 ### 캔버스와 좌표
 
