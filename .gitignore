@@ -9,3 +9,6 @@ dev-dist
 .vite
 coverage
 supabase/.temp/
+
+# Codex 위임용 로컬 워크트리
+.worktrees/
