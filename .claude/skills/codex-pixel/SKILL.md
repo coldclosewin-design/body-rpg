@@ -21,7 +21,7 @@ cd .worktrees/$TASK && npm ci       # Codex 샌드박스는 네트워크가 막�
 ## 2. Codex 실행 (백그라운드, 마지막 보고는 파일로)
 
 ```bash
-codex exec -C .worktrees/$TASK -s workspace-write --color never \
+codex exec -C .worktrees/$TASK -s workspace-write --add-dir "<repo>/.git" --color never \
   -o "<scratchpad>/codex-$TASK.md" - <<'EOF'
 $pixel-skin <사용자가 준 캐릭터 목록과 외형>
 PR 은 열지 말고 이 브랜치(codex/<TASK>)에 커밋만 해라. 푸시도 하지 마라.
@@ -29,6 +29,7 @@ EOF
 ```
 
 - `-s workspace-write` 를 꼭 명시한다. 사용자 config 기본값은 danger-full-access 다.
+- `--add-dir "<repo>/.git"` 가 없으면 워크트리의 git 인덱스가 쓰기 범위 밖이라 Codex 의 `git add` 가 실패한다(첫 실행에서 확인). 그래도 실패하면 Claude 가 4절처럼 직접 커밋한다.
 - Bash 는 `run_in_background: true`, timeout 600000. 끝나면 알림이 온다. 폴링하지 않는다.
 - 토큰을 아끼려면 `-c model_reasoning_effort=high` 를 붙인다.
 
