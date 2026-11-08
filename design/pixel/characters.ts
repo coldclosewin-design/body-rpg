@@ -95,6 +95,27 @@ export const CHARACTERS: CharacterDef[] = [
     key: 'dreamer', label: '드리머', desc: '슬리퍼의 완성. 수면모자와 줄무늬 잠옷, 머리 위로 zZ.',
     parts: [P.HEAD, P.CLOSED_EYES, P.NIGHTCAP('M', 'm'), P.PAJAMA('B', 'b', 'W'), P.PANTS('B', 'b', 'A'), P.ZZZ],
   },
+  // ── 전투 직업: 미배정 시즌 보상 스킨 ──
+  {
+    key: 'warrior', label: '전사', desc: '은발 아래 한쪽 눈을 붉게 빛내며, 흰 셔츠 깃과 검은 넥타이를 갖춘 긴 코트 차림으로 대검을 바닥에 짚는다.',
+    parts: [P.LONG_COAT('X', 'x'), P.PANTS('X', 'P', 'P'), { ...P.JACKET('X', 'x'), map: { 1: 'X', 2: 'x', W: 'X' } }, P.SHIRT_COLLAR, { ...P.TIE, map: { R: 'X', r: 'P' } }, P.HEAD, P.HAIR_SHORT, P.BROW_SHADOW, P.RED_EYE, P.GROUNDED_SWORD],
+    recolor: { H: 'L', h: 'l' },
+  },
+  {
+    key: 'archer', label: '궁수', desc: '은발을 감춘 어두운 후드와 긴 코트 아래, 낡은 가죽 화살통을 메고 은색 현의 나무 활을 조용히 내려 든다.',
+    parts: [P.LONG_COAT('X', 'P'), P.QUIVER, P.PANTS('P', 'X', 'P'), P.JACKET('X', 'P'), P.HEAD, P.HAIR_SHORT, P.HOOD('X', 'x'), P.BROW_SHADOW, P.RECURVE_BOW],
+    recolor: { H: 'L', h: 'l', W: 'L' },
+  },
+  {
+    key: 'mage', label: '마법사', desc: '검은 뾰족 모자 아래 백발과 수염을 드리운 노마법사가 긴 남색 로브를 끌며 붉은 구슬 지팡이를 바닥에 짚는다.',
+    parts: [P.LONG_COAT('X', 'P'), P.PANTS('P', 'X', 'P'), P.ROBE('P', 'X', 'X'), P.HEAD, P.BEARD, P.HAIR_LONG, P.POINTED_HAT('X', 'P'), P.BROW_SHADOW, P.ORB_STAFF('R', 'l'), P.SPARKLES],
+    recolor: { H: 'W', h: 'l', Y: 'X' },
+  },
+  {
+    key: 'rogue', label: '도적', desc: '은발 한 가닥만 남긴 복면과 은색 버클 아래, 찢어진 긴 망토를 한쪽으로 늘어뜨리고 쌍단검을 몸 옆에 낮춰 든다.',
+    parts: [P.TATTERED_CAPE('X', 'x'), P.PANTS('X', 'P', 'P'), P.LEATHER_ARMOR('X', 'P'), P.HEAD, P.HAIR_SHORT, P.HOOD('X', 'P'), P.FACE_WRAP('X', 'P'), P.DAGGER_L, P.DAGGER_R],
+    recolor: { H: 'L', h: 'l' },
+  },
   {
     key: 'goblin', label: '나태 고블린', desc: '스트릭이 끊기면 나타나는 훼방꾼. 초록 피부, 뾰족 귀, 몽둥이.',
     parts: [P.HEAD, P.EAR_L, P.EAR_R, P.TANK('N', 'n'), P.SHORTS('n', 'G'), P.CLUB],
