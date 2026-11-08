@@ -41,11 +41,13 @@ public/sprites/<key>.png   빌드 결과. 앱이 읽는 파일
 Codex CLI 는 `image_gen` 도구로 직접 생성할 수 있다(전사 원본이 그렇게 만들어졌다). Claude 세션에서는 `/codex-pixel` 스킬이 아니라 다음처럼 Codex 에 생성만 맡기면 된다:
 `codex exec -s workspace-write "design/sprites/README.md 의 공통 접두 + <key> 문장으로 이미지를 생성해 design/sprites/src/<key>.png 로 저장"` → `npm run sprites -- --only <key>`.
 
-공통 접두:
+공통 접두 (확정: 전사 2차 생성에서 채택. 1차의 8등신 고디테일 버전은 디테일이 과해 폐기):
 
-> Pixel art full-body character sprite, front-facing idle pose, standing on flat ground, 8-heads-tall realistic proportions, dark fantasy mood, muted low-saturation palette (charcoal, navy, brown, silver, off-white) with one small red accent, soft 4-step shading, no black outline, no ground shadow, plain flat bright magenta background (#ff00ff) that touches no part of the character, centered, the character fills about 80% of the image height, 16-bit era quality similar to a hand-pixelled Aseprite piece. Single character, no text, no frame.
+> Chunky low-detail pixel art full-body character sprite, front-facing idle pose, standing on flat ground. Drawn as a small 40x80-pixel sprite scaled up with crisp square pixels, so shapes are simple and bold with very little fine detail: no individual hair strands, no fabric folds, no small buckles. About 5.5 heads tall (stylized, head slightly larger than realistic). Flat 3-step shading per surface, thin dark outline around the silhouette, 14 colors maximum, muted low-saturation palette (charcoal, navy, brown, silver, off-white) with one small red accent. Dark fantasy mood. [캐릭터 문장] Plain flat bright magenta background (#ff00ff) touching no part of the character, no ground shadow, single character, no text, no frame, character fills about 85% of the image height.
 
-배경을 마젠타로 두는 이유: 회색 배경은 어두운 코트와 색이 가까워 빌드의 배경 제거가 옷까지 지운다(전사 1차 생성에서 확인). 회색 배경 원본은 `--bgtol 10` 처럼 허용치를 낮춰 변환한다.
+- 변환은 기본값(`npm run sprites -- --colors 24`). 생성 결과의 픽셀 격자가 대략 80×160 이라 64×128 로 줄여도 형태가 유지된다.
+- `--grid 32x64` 를 주면 더 거칠게(픽셀 2배 굵기) 만들 수 있다. 전사에서는 64×128 그대로가 "24×32 초안과 고디테일의 중간"으로 적당했다.
+- 배경을 마젠타로 두는 이유: 회색 배경은 어두운 코트와 색이 가까워 빌드의 배경 제거가 옷까지 지운다(전사 1차 생성에서 확인). 회색 배경 원본은 `--bgtol 10` 처럼 허용치를 낮춰 변환한다.
 
 캐릭터별 뒤에 붙일 문장:
 

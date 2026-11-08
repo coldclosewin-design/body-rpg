@@ -20,9 +20,15 @@ const OUT_DIR = join(ROOT, 'public', 'sprites')
 const args = process.argv.slice(2)
 const opt = (name: string, def: string) => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : def }
 const [FRAME_W, FRAME_H] = opt('size', '64x128').split('x').map(Number)
+// --grid 32x64: 더 거친 격자로 축소한 뒤 정수배로 프레임을 채운다(픽셀이 굵어져 디테일이 줄어든다). 프레임이 격자의 정수배여야 한다
+const [GRID_W, GRID_H] = (opt('grid', '') || `${FRAME_W}x${FRAME_H}`).split('x').map(Number)
+if (FRAME_W % GRID_W || FRAME_H % GRID_H || FRAME_W / GRID_W !== FRAME_H / GRID_H) { console.error(`--grid ${GRID_W}x${GRID_H} 는 --size ${FRAME_W}x${FRAME_H} 의 정수 분수가 아닙니다`); process.exit(1) }
+const UPSCALE = FRAME_W / GRID_W
 const MAX_COLORS = Number(opt('colors', '32'))
 const ONLY = opt('only', '')
 const BG_TOL = Number(opt('bgtol', '28'))
+const OUT_DIR_OPT = opt('outdir', '')          // 실험용: 결과를 다른 폴더에
+const PREVIEW_PATH = opt('preview', '')        // 실험용: 미리보기 파일 경로
 const FRAMES = 2
 
 // ── PNG 읽기 (color type 0/2/3/4/6, 8bit) ──
@@ -142,6 +148,18 @@ function fitToFrame(img: Img, fw: number, fh: number): Img {
   return { w: fw, h: fh, px: out }
 }
 
+// ── 3b. 정수배 확대(가장 가까운 이웃) ──
+function upscale(img: Img, k: number): Img {
+  if (k === 1) return img
+  const w = img.w * k, h = img.h * k
+  const out = new Uint8ClampedArray(w * h * 4)
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const so = (((y / k) | 0) * img.w + ((x / k) | 0)) * 4
+    out.set(img.px.subarray(so, so + 4), (y * w + x) * 4)
+  }
+  return { w, h, px: out }
+}
+
 // ── 4. 팔레트 축소 (median cut) ──
 function quantize(img: Img, maxColors: number): { img: Img; colors: number } {
   const pts: number[][] = []
@@ -204,7 +222,8 @@ function preview(frames: { key: string; img: Img }[], scale: number, cols = 5): 
 
 // ── main ──
 if (!existsSync(SRC_DIR)) { console.error(`원본 폴더가 없습니다: ${SRC_DIR}`); process.exit(1) }
-mkdirSync(OUT_DIR, { recursive: true })
+const outDir = OUT_DIR_OPT || OUT_DIR
+mkdirSync(outDir, { recursive: true })
 const files = readdirSync(SRC_DIR).filter((f) => f.toLowerCase().endsWith('.png') && (!ONLY || basename(f, '.png') === ONLY)).sort()
 if (!files.length) { console.error('처리할 PNG 가 없습니다'); process.exit(1) }
 const built: { key: string; img: Img }[] = []
@@ -212,12 +231,15 @@ for (const f of files) {
   const key = basename(f, '.png')
   const src = decodePng(readFileSync(join(SRC_DIR, f)))
   const cut = crop(removeBackground(src))
-  const fit = fitToFrame(cut, FRAME_W, FRAME_H)
-  const { img, colors } = quantize(fit, MAX_COLORS)
-  writeFileSync(join(OUT_DIR, `${key}.png`), encodePng(toSheet(img, FRAMES)))
+  const fit = fitToFrame(cut, GRID_W, GRID_H)
+  const { img: q, colors } = quantize(fit, MAX_COLORS)
+  const img = upscale(q, UPSCALE)
+  writeFileSync(join(outDir, `${key}.png`), encodePng(toSheet(img, FRAMES)))
   built.push({ key, img })
-  console.log(`${key}: ${src.w}×${src.h} → 잘라냄 ${cut.w}×${cut.h} → ${FRAME_W}×${FRAME_H} ×${FRAMES}프레임, 색 ${colors}개 → public/sprites/${key}.png`)
+  const grid = UPSCALE > 1 ? ` (격자 ${GRID_W}×${GRID_H} ×${UPSCALE})` : ''
+  console.log(`${key}: ${src.w}×${src.h} → 잘라냄 ${cut.w}×${cut.h} → ${FRAME_W}×${FRAME_H}${grid} ×${FRAMES}프레임, 색 ${colors}개 → ${join(outDir, key + '.png')}`)
 }
-writeFileSync(join(HERE, 'preview.png'), encodePng(preview(built, 4)))
-console.log(`미리보기: design/sprites/preview.png (${built.length}개)`)
+const previewPath = PREVIEW_PATH || join(HERE, 'preview.png')
+writeFileSync(previewPath, encodePng(preview(built, 4)))
+console.log(`미리보기: ${previewPath} (${built.length}개)`)
 console.log(`등록: characters.ts 의 해당 캐릭터에 png: { kind: 'png', url: 'sprites/<key>.png', frameW: ${FRAME_W}, frameH: ${FRAME_H}, frames: ${FRAMES} }`)
