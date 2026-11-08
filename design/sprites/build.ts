@@ -89,13 +89,26 @@ function encodePng(img: Img): Buffer {
   return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ihdr), chunk('IDAT', deflateSync(raw, { level: 9 })), chunk('IEND', Buffer.alloc(0))])
 }
 
-// ── 1. 배경 제거: 알파가 없으면 네 모서리 색과 비슷한 픽셀을 가장자리에서부터 채워 지운다 ──
+// ── 1. 배경 제거 ──
+// 알파가 있으면 그대로. 배경이 마젠타(권장)면 캐릭터에 없는 색이므로 이미지 전체에서 지우고, 경계의 번진 픽셀은 거리에 따라 반투명 처리한다.
+// 그 밖의 단색 배경(회색 등)은 옷과 색이 겹칠 수 있어 가장자리에서 이어진 영역만 채워 지운다.
 function removeBackground(img: Img): Img {
   const { w, h, px } = img
   let hasAlpha = false
   for (let i = 3; i < px.length; i += 4) if (px[i] < 250) { hasAlpha = true; break }
   if (hasAlpha) return img
   const corners = [[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1]].map(([x, y]) => { const o = (y * w + x) * 4; return [px[o], px[o + 1], px[o + 2]] })
+  const c0 = corners[0]
+  const isMagenta = c0[0] > 180 && c0[2] > 180 && c0[1] < 110
+  if (isMagenta) {
+    const TOL = 110 // 마젠타와 이 거리(채널 최대 차) 안이면 배경. 절반 이하면 완전 투명, 그 사이는 반투명(번짐)
+    for (let o = 0; o < px.length; o += 4) {
+      const d = Math.max(Math.abs(px[o] - c0[0]), Math.abs(px[o + 1] - c0[1]), Math.abs(px[o + 2] - c0[2]))
+      if (d >= TOL) continue
+      px[o + 3] = d <= TOL / 2 ? 0 : Math.round(((d - TOL / 2) / (TOL / 2)) * 255)
+    }
+    return img
+  }
   const isBg = (o: number) => corners.some((c) => Math.abs(px[o] - c[0]) + Math.abs(px[o + 1] - c[1]) + Math.abs(px[o + 2] - c[2]) <= BG_TOL * 3)
   const seen = new Uint8Array(w * h)
   const stack: number[] = []
@@ -242,4 +255,25 @@ for (const f of files) {
 const previewPath = PREVIEW_PATH || join(HERE, 'preview.png')
 writeFileSync(previewPath, encodePng(preview(built, 4)))
 console.log(`미리보기: ${previewPath} (${built.length}개)`)
+
+// ── 7. manifest.ts: public/sprites 에 있는 모든 시트를 앱이 자동 등록하도록 기록 (실험용 --outdir 일 때는 건너뜀) ──
+if (!OUT_DIR_OPT) {
+  const sheets = readdirSync(OUT_DIR).filter((f) => f.endsWith('.png')).sort().map((f) => {
+    const b = readFileSync(join(OUT_DIR, f))
+    const w = b.readUInt32BE(16), h = b.readUInt32BE(20)
+    return { key: basename(f, '.png'), frameW: w / FRAMES, frameH: h, frames: FRAMES }
+  })
+  const lines = sheets.map((s) => `  ${s.key}: { kind: 'png', url: 'sprites/${s.key}.png', frameW: ${s.frameW}, frameH: ${s.frameH}, frames: ${s.frames} },`)
+  writeFileSync(join(HERE, 'manifest.ts'), [
+    '// 자동 생성 파일 — design/sprites/build.ts 가 public/sprites/*.png 를 보고 다시 쓴다. 손으로 고치지 말 것.',
+    "import type { PngSheet } from '../pixel/types'",
+    '',
+    '/** key → PNG 스프라이트. 앱(src/pixel/sprites.ts)은 여기 있는 캐릭터를 픽셀맵 대신 PNG 로 그린다 */',
+    'export const PNG_SPRITES: Record<string, PngSheet> = {',
+    ...lines,
+    '}',
+    '',
+  ].join('\n'))
+  console.log(`manifest.ts: ${sheets.length}개 등록 (${sheets.map((s) => s.key).join(', ')})`)
+}
 console.log(`등록: characters.ts 의 해당 캐릭터에 png: { kind: 'png', url: 'sprites/<key>.png', frameW: ${FRAME_W}, frameH: ${FRAME_H}, frames: ${FRAMES} }`)

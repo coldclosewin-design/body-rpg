@@ -11,8 +11,8 @@ export interface CharacterDef {
   /** 합성 후 전체 치환 (예: 고블린 피부색) */
   recolor?: Record<string, string>
   /**
-   * PNG 스프라이트가 있으면 앱은 이것을 우선 그린다(파츠는 시트·대체용으로 남는다).
-   * url 은 public/ 기준 상대 경로('sprites/warrior.png'). 만드는 법: design/sprites/build.ts
+   * PNG 스프라이트 수동 지정. 보통은 필요 없다: design/sprites/build.ts 가 public/sprites 의 시트를
+   * design/sprites/manifest.ts 에 자동 등록하고 앱이 그것을 우선 그린다. 다른 파일명·프레임 크기를 쓸 때만 적는다.
    */
   png?: PngSheet
 }
@@ -106,7 +106,6 @@ export const CHARACTERS: CharacterDef[] = [
     key: 'warrior', label: '전사', desc: '은발 아래 한쪽 눈을 붉게 빛내며, 흰 셔츠 깃과 검은 넥타이를 갖춘 긴 코트 차림으로 대검을 바닥에 짚는다.',
     parts: [P.LONG_COAT('X', 'x'), P.PANTS('X', 'P', 'P'), { ...P.JACKET('X', 'x'), map: { 1: 'X', 2: 'x', W: 'X' } }, P.SHIRT_COLLAR, { ...P.TIE, map: { R: 'X', r: 'P' } }, P.HEAD, P.HAIR_SHORT, P.BROW_SHADOW, P.RED_EYE, P.GROUNDED_SWORD],
     recolor: { H: 'L', h: 'l' },
-    png: { kind: 'png', url: 'sprites/warrior.png', frameW: 64, frameH: 128, frames: 2 },
   },
   {
     key: 'archer', label: '궁수', desc: '은발을 감춘 어두운 후드와 긴 코트 아래, 낡은 가죽 화살통을 메고 은색 현의 나무 활을 조용히 내려 든다.',

@@ -1,6 +1,7 @@
 import { CHARACTERS } from '@design/pixel/characters'
 import { CROWN, HEADBAND, SUNGLASSES } from '@design/pixel/parts'
 import { PALETTE, toPixelMap } from '@design/pixel/palette'
+import { PNG_SPRITES } from '@design/sprites/manifest'
 import type { SpriteDef } from '@design/pixel/types'
 
 export { PALETTE, toPixelMap }
@@ -16,10 +17,14 @@ export { PALETTE, toPixelMap }
 /** public/ 기준 상대 경로를 배포 base(/body-rpg/ 등)에 맞춰 절대 경로로 */
 const assetUrl = (rel: string) => `${import.meta.env.BASE_URL}${rel.replace(/^\//, '')}`
 
-const characterSprites: SpriteDef[] = CHARACTERS.map((c) => ({
-  key: c.key, label: c.label, desc: c.desc, layer: 'outfit',
-  source: c.png ? { ...c.png, url: assetUrl(c.png.url) } : toPixelMap(c.parts, c.recolor),
-}))
+/** PNG 가 있으면(캐릭터 정의의 png 또는 빌드 manifest) 그것을, 없으면 24×32 픽셀맵을 */
+const characterSprites: SpriteDef[] = CHARACTERS.map((c) => {
+  const png = c.png ?? PNG_SPRITES[c.key]
+  return {
+    key: c.key, label: c.label, desc: c.desc, layer: 'outfit',
+    source: png ? { ...png, url: assetUrl(png.url) } : toPixelMap(c.parts, c.recolor),
+  }
+})
 
 const accessorySprites: SpriteDef[] = [
   { key: 'headband', label: '헤어밴드', layer: 'accessory', source: toPixelMap([HEADBAND]) },
