@@ -97,20 +97,24 @@ export const CHARACTERS: CharacterDef[] = [
   },
   // ── 전투 직업: 미배정 시즌 보상 스킨 ──
   {
-    key: 'warrior', label: '전사', desc: '뿔 투구와 갈색 가죽 갑옷을 걸치고 커다란 도끼로 전장을 누빈다.',
-    parts: [P.PANTS('X', 'P', 'n'), P.LEATHER_ARMOR('N', 'n'), P.HEAD, P.HAIR_SHORT, P.HORNED_HELMET('X', 'P'), P.BATTLE_AXE],
+    key: 'warrior', label: '전사', desc: '은발 아래 한쪽 눈을 붉게 빛내며, 흰 셔츠 깃과 검은 넥타이를 갖춘 긴 코트 차림으로 대검을 바닥에 짚는다.',
+    parts: [P.LONG_COAT('X', 'x'), P.PANTS('X', 'P', 'P'), { ...P.JACKET('X', 'x'), map: { 1: 'X', 2: 'x', W: 'X' } }, P.SHIRT_COLLAR, { ...P.TIE, map: { R: 'X', r: 'P' } }, P.HEAD, P.HAIR_SHORT, P.BROW_SHADOW, P.RED_EYE, P.GROUNDED_SWORD],
+    recolor: { H: 'L', h: 'l' },
   },
   {
-    key: 'archer', label: '궁수', desc: '파란 깃털 모자와 등 뒤 화살통을 갖추고 금빛 반곡궁으로 먼 표적을 겨눈다.',
-    parts: [P.QUIVER, P.PANTS('P', 'P', 'N'), P.JACKET('C', 'c'), P.HEAD, P.HAIR_SHORT, P.FEATHER_CAP('B', 'b'), P.FEATHER, P.RECURVE_BOW],
+    key: 'archer', label: '궁수', desc: '은발을 감춘 어두운 후드와 긴 코트 아래, 낡은 가죽 화살통을 메고 은색 현의 나무 활을 조용히 내려 든다.',
+    parts: [P.LONG_COAT('X', 'P'), P.QUIVER, P.PANTS('P', 'X', 'P'), P.JACKET('X', 'P'), P.HEAD, P.HAIR_SHORT, P.HOOD('X', 'x'), P.BROW_SHADOW, P.RECURVE_BOW],
+    recolor: { H: 'L', h: 'l', W: 'L' },
   },
   {
-    key: 'mage', label: '마법사', desc: '푸른 뾰족 모자와 긴 로브를 두르고 붉은 구슬 지팡이로 금빛 별을 피워 낸다.',
-    parts: [P.PANTS('B', 'b', 'N'), P.ROBE('B', 'b', 'Y'), P.HEAD, P.HAIR_SHORT, P.POINTED_HAT('B', 'b'), P.ORB_STAFF('R', 'r'), P.SPARKLES],
+    key: 'mage', label: '마법사', desc: '검은 뾰족 모자 아래 백발과 수염을 드리운 노마법사가 긴 남색 로브를 끌며 붉은 구슬 지팡이를 바닥에 짚는다.',
+    parts: [P.LONG_COAT('X', 'P'), P.PANTS('P', 'X', 'P'), P.ROBE('P', 'X', 'X'), P.HEAD, P.BEARD, P.HAIR_LONG, P.POINTED_HAT('X', 'P'), P.BROW_SHADOW, P.ORB_STAFF('R', 'l'), P.SPARKLES],
+    recolor: { H: 'W', h: 'l', Y: 'X' },
   },
   {
-    key: 'rogue', label: '도적', desc: '눈만 드러낸 복면에 어두운 가죽 옷과 허리띠를 두르고 양손 단검으로 그림자 속을 누빈다.',
-    parts: [P.PANTS('X', 'P', 'P'), P.LEATHER_ARMOR('X', 'P'), P.HEAD, P.HOOD('X', 'P'), P.FACE_WRAP('X', 'P'), P.DAGGER_L, P.DAGGER_R],
+    key: 'rogue', label: '도적', desc: '은발 한 가닥만 남긴 복면과 은색 버클 아래, 찢어진 긴 망토를 한쪽으로 늘어뜨리고 쌍단검을 몸 옆에 낮춰 든다.',
+    parts: [P.TATTERED_CAPE('X', 'x'), P.PANTS('X', 'P', 'P'), P.LEATHER_ARMOR('X', 'P'), P.HEAD, P.HAIR_SHORT, P.HOOD('X', 'P'), P.FACE_WRAP('X', 'P'), P.DAGGER_L, P.DAGGER_R],
+    recolor: { H: 'L', h: 'l' },
   },
   {
     key: 'goblin', label: '나태 고블린', desc: '스트릭이 끊기면 나타나는 훼방꾼. 초록 피부, 뾰족 귀, 몽둥이.',

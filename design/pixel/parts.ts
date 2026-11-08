@@ -666,17 +666,17 @@ export const HORNED_HELMET = (c1: string, c2: string) => part([
   '.....K1K........K2K.....',
 ], 0, 0, { 1: c1, 2: c2 })
 
-/** 가죽 조끼·대각선 어깨끈·손목 보호대·버클 허리띠 (1 주색 2 음영) */
+/** 가죽 조끼·대각선 어깨끈·장갑·은색 버클 허리띠 (1 주색 2 음영) */
 export const LEATHER_ARMOR = (c1: string, c2: string) => part([
   '........KKKSSKKK........',
   '.......K111K1112K.......',
-  '......K1Y1K111Y22K......',
+  '......K1L1K111L22K......',
   '.....K11K111112222K.....',
   '.....KSK11112222KSK.....',
   '.....K1K11222222K2K.....',
   '.....K1KKKKKKKKKK2K.....',
-  '....KSSKNNNYWNNNKSSK....',
-  '....KKKKnnnYynnnKKKK....',
+  '....KXxKNNNLlNNNKXxK....',
+  '....KKKKnnnLlnnnKKKK....',
   '.......KKKKKKKKKK.......',
 ], 15, 0, { 1: c1, 2: c2 })
 
@@ -703,7 +703,7 @@ export const BATTLE_AXE = part([
   '.KK....',
 ], 10, 17)
 
-/** 왼쪽 어깨 뒤 화살통과 흰 깃 화살 두 개. 머리·몸통보다 먼저 그린다 */
+/** 왼쪽 어깨 뒤의 어두운 가죽 화살통과 흰 깃 화살 두 개. 몸통보다 먼저 그린다 */
 export const QUIVER = part([
   'KK.KK.',
   'KWKKWK',
@@ -711,65 +711,57 @@ export const QUIVER = part([
   '.KNKNK',
   '.KNKNK',
   'KKKKKK',
-  'KAAaaK',
-  'KAYyaK',
-  ...Array(8).fill('KNNnnK'),
+  'KNNnnK',
+  'KNXxnK',
+  ...Array(8).fill('KNnnnK'),
   '.KnnK.',
   '..KK..',
 ], 8, 0)
 
-/** 금빛 반곡궁. 은색 시위와 검정 테를 두른 활대를 구분하고 손을 앞에 겹친다 */
+/** 아래로 내려 든 반곡궁. 은색 현 옆에 2px 목재 활대, 손은 y=22..23에 둔다 */
 export const RECURVE_BOW = part([
-  '.KKK..',
-  '.KYYK.',
-  '.KLYyK',
-  '.KLYyK',
-  ...Array(7).fill('KL.KyK'),
-  'KSSKYK',
-  'KSSKYK',
-  'KL.KyK',
-  'KL.KyK',
-  '.KLYyK',
-  '.KYYK.',
-  '..KK..',
-], 10, 18)
+  '..KKK..',
+  '..KNnK.',
+  '.KLNnK.',
+  'KL.KNnK',
+  ...Array(6).fill('KL.KNnK'),
+  'KSSKNnK',
+  'KSSKNnK',
+  ...Array(4).fill('KL.KNnK'),
+  '.KLNnK.',
+  '..KNnK.',
+  '..KnnK.',
+  '...KK..',
+], 12, 17)
 
-/** 둥근 구슬과 금빛 받침을 단 지팡이. 1 구슬색 2 구슬 음영 */
+/** 작은 구슬과 어두운 나무 지팡이. 구슬색은 2px, 손은 y=22..23, 끝은 y=31 */
 export const ORB_STAFF = (gem: string, gemDark: string) => part([
   '.KKK.',
-  'KW11K',
-  'K111K',
-  'K122K',
-  '.KKK.',
-  '.KYK.',
+  'KX12K',
+  'KX1XK',
+  '.KXK.',
+  ...Array(9).fill('.KNnK'),
+  'KSSnK',
+  'KSSnK',
   ...Array(7).fill('.KNnK'),
-  'KSSnK',
-  'KSSnK',
-  ...Array(5).fill('.KNnK'),
   '..KK.',
-], 8, 19, { 1: gem, 2: gemDark })
+], 9, 19, { 1: gem, 2: gemDark })
 
-/** 모자 양옆과 왼쪽 어깨 옆의 금빛 반짝임. 중앙은 비워 얼굴·모자를 보존한다 */
+/** 모자 양옆의 희미한 빛 두 점. 각각 3×3 외곽선 안에 은색/흰색 1px만 둔다 */
 export const SPARKLES = part([
-  '..K..................K..',
-  '.KYK................KYK.',
-  'KYWYK..............KYWYK',
-  '.KyK................KyK.',
-  '..K..................K..',
-  ...Array(9).fill('........................'),
-  '..K.....................',
-  '.KYK....................',
-  'KYWYK...................',
-  '.KyK....................',
-  '..K.....................',
+  '.K......................',
+  'KLK.....................',
+  '.K....................K.',
+  '.....................KWK',
+  '......................K.',
 ], 0, 0)
 
-/** 후드와 겹쳐 눈만 드러내는 복면. 눈의 흰 점과 목까지 덮는 천 (1 주색 2 음영) */
+/** 후드 아래 은발 한 가닥과 가늘게 그늘진 눈, 목까지 덮는 복면 (1 주색 2 음영) */
 export const FACE_WRAP = (c1: string, c2: string) => part([
-  '.....K1KKKKKKKKKK2K.....',
-  '.....K1KKKKKKKKKK2K.....',
-  '.....K1KSWESSSWEK2K.....',
-  '.....K1KSEESSSEEK2K.....',
+  '.....K1HKKKKKKKKK2K.....',
+  '.....K1hKKKKKKKKK2K.....',
+  '.....K1KxxxxxxxxK2K.....',
+  '.....K1KlKlllKllK2K.....',
   '.....K1KKKKKKKKKK2K.....',
   '.....K111111112222K.....',
   '......K1111122222K......',
@@ -778,31 +770,95 @@ export const FACE_WRAP = (c1: string, c2: string) => part([
   '..........K22K..........',
 ], 6, 0, { 1: c1, 2: c2 })
 
-/** 쌍단검. 좌우 모두 왼쪽 위에 흰 하이라이트, 손은 몸통 위에 겹친다 */
+/** 몸 옆으로 내려 든 짧은 쌍단검. 장갑은 y=22, 날은 아래를 향하며 끝은 y=29 */
 export const DAGGER_L = part([
-  '..K...',
-  '.KLK..',
-  'KWLlK.',
+  '..KK..',
+  '.KXxKK',
+  '.KXxKK',
   'KLLlK.',
-  'KLLlK.',
-  '.KLK..',
-  'KYYYK.',
-  '.KSSSK',
-  '.KSSSK',
-  '.KNK..',
-  '..K...',
-], 14, 1)
+  '.KWlK.',
+  '.KLlK.',
+  '..KlK.',
+  '...K..',
+], 22, 1)
 
 export const DAGGER_R = part([
-  '...K..',
-  '..KLK.',
-  '.KWLlK',
+  '..KK..',
+  'KKXxK.',
+  'KKXxK.',
   '.KLLlK',
-  '.KLLlK',
-  '..KLK.',
-  '.KYYYK',
-  'KSSSK.',
-  'KSSSK.',
-  '..KNK.',
-  '...K..',
-], 14, 17)
+  '.KWlK.',
+  '.KLlK.',
+  '.KLK..',
+  '..K...',
+], 22, 17)
+
+// ── 다크 판타지 전투 파츠 ──
+/** 왼쪽 자락은 발목까지, 오른쪽은 무릎까지 흐르는 코트. 다리·몸통 뒤에 겹친다 */
+export const LONG_COAT = (c1: string, c2: string) => part([
+  '.....KKKK......KKKKK....',
+  '....K1111K....K11112K...',
+  '....K1111K....K11112K...',
+  '....K1111K....K11112K...',
+  '....K1112K....K11112K...',
+  '....K1112K....K11122K...',
+  '....K1112K....K11122K...',
+  '...K11112K....K11222K...',
+  '...K11112K....K11222K...',
+  '...K11112K....K11222K...',
+  '..K111122K....K12222K...',
+  '..K111122K....K2222K....',
+  '..K111222K.....KKKK.....',
+  '..K112222K..............',
+  '...K2222K...............',
+  '....KKKK................',
+], 15, 0, { 1: c1, 2: c2 })
+
+/** 왼쪽 어깨에서 길게 흘러 끝이 갈라지는 망토. 몸통과 손 소품보다 먼저 그린다 */
+export const TATTERED_CAPE = (c1: string, c2: string) => part([
+  '....KKKK..',
+  '...K1112K.',
+  '..K111122K',
+  '..K111122K',
+  '.K1111122K',
+  '.K1111122K',
+  'K11111222K',
+  'K11111222K',
+  'K11112222K',
+  'K11112222K',
+  'K11112222K',
+  'K11122222K',
+  'K11122222K',
+  'K11222222K',
+  'K112K2222K',
+  'K12KK222K.',
+  'K12K.K22K.',
+  '.KK..K2K..',
+  '......K...',
+], 13, 1, { 1: c1, 2: c2 })
+
+/** 검은 넥타이 양옆으로 드러나는 흰 셔츠 깃 3px */
+export const SHIRT_COLLAR = part(['W....W', 'W.....'], 16, 9)
+
+/** 눈썹 아래 1px 피부 그늘. 눈(E)은 HEAD 의 것을 그대로 쓴다 */
+export const BROW_SHADOW = part(['ssssssss'], 7, 8)
+/** 오른쪽 눈만 붉게 빛남. HEAD 의 눈 위에 덮는다 */
+export const RED_EYE = part(['RR', 'rr'], 8, 14)
+
+/** 손을 낮춰 짚는 대검. 검날은 3px 은색 면과 K 외곽선, 끝은 y=31 */
+export const GROUNDED_SWORD = part([
+  '...KK..',
+  '..KXxK.',
+  '..KXxK.',
+  '..KXxK.',
+  'KSSSSK.',
+  'KLLlllK',
+  '.KWllK.',
+  '.KLllK.',
+  '.KLllK.',
+  '.KLllK.',
+  '.KLllK.',
+  '.KLllK.',
+  '..KLK..',
+  '...K...',
+], 18, 17)
