@@ -11,6 +11,7 @@ src/                 앱 코드 (라우터·화면·게임 로직·Supabase)
 src/pixel/           픽셀 캐릭터 렌더러(PixelCanvas)와 스프라이트 레지스트리. design/pixel 을 가져다 쓴다
 design/              디자인 자산 원본. 앱 의존성 없음 — 상세 규격은 design/README.md
 design/pixel/        parts.ts(파츠) · characters.ts(캐릭터) · palette.ts(색) · render-sheet.ts(시트 PNG)
+design/sprites/      고해상도 PNG 스프라이트(64×128) 파이프라인. 원본 src/<key>.png → npm run sprites → public/sprites/. 규격·프롬프트는 design/sprites/README.md
 design/theme/        Tailwind @theme 토큰과 픽셀 UI 클래스
 supabase/            DB 마이그레이션
 .github/workflows/   main 푸시 → 테스트 → 빌드 → GitHub Pages 배포

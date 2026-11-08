@@ -13,8 +13,12 @@ export { PALETTE, toPixelMap }
  * 로 바꾸면 된다.
  */
 
+/** public/ 기준 상대 경로를 배포 base(/body-rpg/ 등)에 맞춰 절대 경로로 */
+const assetUrl = (rel: string) => `${import.meta.env.BASE_URL}${rel.replace(/^\//, '')}`
+
 const characterSprites: SpriteDef[] = CHARACTERS.map((c) => ({
-  key: c.key, label: c.label, desc: c.desc, layer: 'outfit', source: toPixelMap(c.parts, c.recolor),
+  key: c.key, label: c.label, desc: c.desc, layer: 'outfit',
+  source: c.png ? { ...c.png, url: assetUrl(c.png.url) } : toPixelMap(c.parts, c.recolor),
 }))
 
 const accessorySprites: SpriteDef[] = [

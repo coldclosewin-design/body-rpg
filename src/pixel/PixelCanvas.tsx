@@ -67,37 +67,47 @@ function drawSource(ctx: CanvasRenderingContext2D, src: SpriteSource, frame: num
   }
 }
 
-/** 레이어 합성: 직업 스킨(전신) → 액세서리 */
+/** 스프라이트의 캔버스 크기. 픽셀맵은 24×32 고정, PNG 는 프레임 크기 */
+const sizeOf = (src: SpriteSource | undefined): [number, number] =>
+  src && src.kind === 'png' ? [src.frameW, src.frameH] : [CANVAS_W, CANVAS_H]
+
+/**
+ * 레이어 합성: 직업 스킨(전신) → 액세서리.
+ * PNG 스킨은 자체 크기(예: 64×128)로 그리며, 24×32 픽셀맵 액세서리는 크기가 맞지 않으므로 그 위에 얹지 않는다.
+ * 표시 크기(scale)는 24×32 기준이라, PNG 스킨은 같은 scale 에서 더 크게 보이지 않도록 높이를 32px 기준으로 맞춘다.
+ */
 export function PixelCanvas({ appearance, outfit, accessory, scale = 5, animate = true, className }: PixelCanvasProps) {
   const ref = useRef<HTMLCanvasElement>(null)
   const frameRef = useRef(0)
+  const outfitDef = spriteByKey(outfit) ?? spriteByKey(DEFAULT_OUTFIT)
+  const [w, h] = sizeOf(outfitDef?.source)
+  const isPng = outfitDef?.source.kind === 'png'
+  // PNG 는 픽셀 밀도가 높으므로 CSS 높이를 32×scale 에 맞춘다(정수 배율 유지: 최소 1)
+  const cssScale = isPng ? Math.max(1, Math.floor((CANVAS_H * scale) / h)) : scale
 
   useEffect(() => {
     const canvas = ref.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-    const layers: (SpriteDef | undefined)[] = [
-      spriteByKey(outfit) ?? spriteByKey(DEFAULT_OUTFIT),
-      spriteByKey(accessory),
-    ]
+    const layers: (SpriteDef | undefined)[] = [outfitDef, isPng ? undefined : spriteByKey(accessory)]
     const render = () => {
-      ctx.clearRect(0, 0, CANVAS_W, CANVAS_H)
+      ctx.clearRect(0, 0, w, h)
       for (const l of layers) if (l) drawSource(ctx, l.source, frameRef.current, appearance, render)
     }
     render()
     if (!animate) return
     const id = window.setInterval(() => { frameRef.current = (frameRef.current + 1) % 2; render() }, 600)
     return () => window.clearInterval(id)
-  }, [appearance, outfit, accessory, animate])
+  }, [appearance, outfit, accessory, animate, outfitDef, isPng, w, h])
 
   return (
     <canvas
       ref={ref}
       className={`pixel ${className ?? ''}`}
-      width={CANVAS_W}
-      height={CANVAS_H}
-      style={{ width: CANVAS_W * scale, height: CANVAS_H * scale }}
+      width={w}
+      height={h}
+      style={{ width: w * cssScale, height: h * cssScale }}
     />
   )
 }

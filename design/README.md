@@ -13,9 +13,14 @@ design/
 │  ├─ parts.ts           파츠 76종 (머리·머리카락·모자·몸통·다리·소품·효과) + compose()
 │  ├─ characters.ts      파츠를 조합한 캐릭터 25종
 │  └─ render-sheet.ts    시트 PNG 생성 스크립트
+├─ sprites/              레퍼런스 풍 고해상도 PNG 스프라이트(64×128) 파이프라인 — sprites/README.md
+│  ├─ build.ts           원본 PNG → 배경 제거·축소·팔레트 → public/sprites/<key>.png (npm run sprites)
+│  └─ src/<key>.png      이미지 생성 모델·작가가 만든 원본
 └─ theme/
    └─ theme.css          Tailwind v4 @theme 토큰(색·폰트) + 픽셀 UI 컴포넌트 클래스
 ```
+
+캐릭터에 `png` 필드가 있으면 앱은 24×32 픽셀맵 대신 그 PNG 스프라이트를 그린다. 전환 방향과 규격은 `sprites/README.md`.
 
 ## 1. 컨셉 한 줄
 
