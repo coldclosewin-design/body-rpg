@@ -106,7 +106,7 @@ export const CHARACTERS: CharacterDef[] = [
     key: 'warrior', label: '전사', desc: '은발 아래 한쪽 눈을 붉게 빛내며, 흰 셔츠 깃과 검은 넥타이를 갖춘 긴 코트 차림으로 대검을 바닥에 짚는다.',
     parts: [P.LONG_COAT('X', 'x'), P.PANTS('X', 'P', 'P'), { ...P.JACKET('X', 'x'), map: { 1: 'X', 2: 'x', W: 'X' } }, P.SHIRT_COLLAR, { ...P.TIE, map: { R: 'X', r: 'P' } }, P.HEAD, P.HAIR_SHORT, P.BROW_SHADOW, P.RED_EYE, P.GROUNDED_SWORD],
     recolor: { H: 'L', h: 'l' },
-    // PNG 원본이 준비되면: png: { kind: 'png', url: 'sprites/warrior.png', frameW: 64, frameH: 128, frames: 2 }  (design/sprites/README.md)
+    png: { kind: 'png', url: 'sprites/warrior.png', frameW: 64, frameH: 128, frames: 2 },
   },
   {
     key: 'archer', label: '궁수', desc: '은발을 감춘 어두운 후드와 긴 코트 아래, 낡은 가죽 화살통을 메고 은색 현의 나무 활을 조용히 내려 든다.',

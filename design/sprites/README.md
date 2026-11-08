@@ -36,11 +36,16 @@ public/sprites/<key>.png   빌드 결과. 앱이 읽는 파일
    `png: { kind: 'png', url: 'sprites/<key>.png', frameW: 64, frameH: 128, frames: 2 }`
 5. `npm test`, `npm run lint`, 앱에서 도감·캐릭터·오늘 화면 확인 후 `public/sprites/<key>.png` 와 `src/<key>.png` 를 함께 커밋.
 
-## 이미지 생성 프롬프트 (ChatGPT 이미지 등)
+## 이미지 생성 프롬프트 (Codex 의 image_gen, ChatGPT 이미지 등)
+
+Codex CLI 는 `image_gen` 도구로 직접 생성할 수 있다(전사 원본이 그렇게 만들어졌다). Claude 세션에서는 `/codex-pixel` 스킬이 아니라 다음처럼 Codex 에 생성만 맡기면 된다:
+`codex exec -s workspace-write "design/sprites/README.md 의 공통 접두 + <key> 문장으로 이미지를 생성해 design/sprites/src/<key>.png 로 저장"` → `npm run sprites -- --only <key>`.
 
 공통 접두:
 
-> Pixel art full-body character sprite, front-facing idle pose, standing on flat ground, 8-heads-tall realistic proportions, dark fantasy mood, muted low-saturation palette (charcoal, navy, brown, silver, off-white) with one small red accent, soft 4-step shading, no black outline, no ground shadow, plain flat gray background (#3e3c3f), centered, the character fills about 80% of the image height, 16-bit era quality similar to a hand-pixelled Aseprite piece. Single character, no text, no frame.
+> Pixel art full-body character sprite, front-facing idle pose, standing on flat ground, 8-heads-tall realistic proportions, dark fantasy mood, muted low-saturation palette (charcoal, navy, brown, silver, off-white) with one small red accent, soft 4-step shading, no black outline, no ground shadow, plain flat bright magenta background (#ff00ff) that touches no part of the character, centered, the character fills about 80% of the image height, 16-bit era quality similar to a hand-pixelled Aseprite piece. Single character, no text, no frame.
+
+배경을 마젠타로 두는 이유: 회색 배경은 어두운 코트와 색이 가까워 빌드의 배경 제거가 옷까지 지운다(전사 1차 생성에서 확인). 회색 배경 원본은 `--bgtol 10` 처럼 허용치를 낮춰 변환한다.
 
 캐릭터별 뒤에 붙일 문장:
 
@@ -48,7 +53,29 @@ public/sprites/<key>.png   빌드 결과. 앱이 읽는 파일
 - **archer 궁수** — hooded figure in a dark coat, worn leather quiver on the back, dark wooden recurve bow held low in one hand, face half hidden in hood shadow, a single silver hair strand.
 - **mage 마법사** — old mage with long white hair and beard, wide-brimmed black pointed hat, long navy robe, gnarled dark staff with a small red orb, two faint silver sparks.
 - **rogue 도적** — masked rogue, dark leather jacket, tattered long cape blowing to one side, twin daggers held low at the sides, silver belt buckle.
-- 나머지 21종은 `design/README.md` 캐릭터 표의 설명을 같은 형식의 영어 한 문장으로 옮겨 쓴다. 분위기 접두는 그대로 둔다.
+나머지 21종(운동·습관 테마지만 같은 다크 판타지 접두를 쓴다):
+
+- **novice 견습생** — young adventurer in a plain off-white t-shirt and dark shorts, empty hands at the sides, calm neutral expression.
+- **tracksuit 운동깔짝이** — athlete in a dark navy tracksuit with a thin white stripe down the sleeves and legs, cloth headband, hands loosely at the sides.
+- **runner 러너** — lean runner in a dark tank top with a race bib, dark shorts, short spiky hair, faint motion lines trailing behind one leg.
+- **striker 스트라이커** — footballer in a dark red kit with the number 10, dark shorts and socks, one foot resting on a worn leather ball.
+- **ranger 레인저** — ranger in a deep green hood and dark leather jacket, longbow held low in one hand, quiet watchful stance.
+- **brawler 브롤러** — bare-chested brawler with wrapped fists, dark boxing shorts, red hand wraps as the only accent.
+- **lifter 리프터** — barbarian-built lifter with a thick beard, bare chest, dark leather trousers, a heavy iron dumbbell resting in one hand.
+- **knight 철의 기사** — knight in dark steel plate armor, closed helmet with a single red plume, longsword and kite shield held low.
+- **champion 챔피언** — champion in a dark gold-trimmed robe, red boxing gloves hanging at the sides, title belt at the waist.
+- **monk 수행자** — shaven-headed monk in a dark saffron robe, wooden prayer beads around the neck, hands folded, serene.
+- **swimmer 스위머** — swimmer in a dark swim cap and goggles pushed up on the forehead, bare torso, dark trunks, a towel over one shoulder.
+- **sage 현자** — elderly sage in a deep purple robe, long white beard, pointed hat, crystal-tipped staff planted on the ground.
+- **climber 클라이머** — climber in a dark harness over a fitted top, chalk-dusted hands, coiled rope over one shoulder, a short axe at the belt.
+- **healer 힐러** — long-haired healer in an off-white robe with a dark sash, staff topped with a small green crystal held upright.
+- **bookworm 책벌레** — scholar with round glasses, dark green cardigan, dark trousers, an open book held in both hands.
+- **speaker 스피커** — speaker in a white shirt and dark tie, dark trousers, handheld microphone raised slightly, confident posture.
+- **dj 디제이** — DJ with large dark red headphones around the neck, sunglasses, dark t-shirt, a small synthesizer tucked under one arm.
+- **bard 바드** — bard in a dark green feathered cap and plum doublet, lute slung across the body, two faint silver music notes drifting above.
+- **napper 낮잠꾼** — sleepy figure with a red eye mask pushed up on the forehead, soft dark teal shirt, hugging a pale pillow.
+- **dreamer 드리머** — dreamer in a long purple nightcap and dark blue striped pajamas, eyes closed, a small pale "zZ" floating above.
+- **goblin 나태 고블린** — small hunched goblin with dull green skin, pointed ears, ragged brown vest, a crude wooden club dragging on the ground, sly grin. (적 캐릭터라 접두의 "realistic proportions" 대신 "short hunched proportions" 로 바꾼다.)
 
 생성 결과가 정사각형(1024×1024)이어도 상관없다. 빌드가 캐릭터 부분만 잘라 64×128 에 맞춘다. 캐릭터가 너무 가늘면 가로가 남고, 너무 넓으면 세로가 남는다.
 
