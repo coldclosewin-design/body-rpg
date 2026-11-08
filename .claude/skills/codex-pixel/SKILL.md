@@ -29,7 +29,8 @@ EOF
 ```
 
 - `-s workspace-write` 를 꼭 명시한다. 사용자 config 기본값은 danger-full-access 다.
-- `--add-dir "<repo>/.git"` 가 없으면 워크트리의 git 인덱스가 쓰기 범위 밖이라 Codex 의 `git add` 가 실패한다(첫 실행에서 확인). 그래도 실패하면 Claude 가 4절처럼 직접 커밋한다.
+- Windows 에서는 `--add-dir "<repo>/.git"` 를 줘도 Codex 의 `git add` 가 index.lock 생성 거부로 실패한다(두 번 확인). 과제문에 "커밋은 하지 말고 파일만 바꿔라"라고 쓰고, 커밋은 Claude 가 3절 검증 후에 한다.
+- 분위기(스타일) 변경을 맡길 때는 "피부(S/s)는 recolor 하지 말 것, HEAD 의 눈(E)을 덮어 지우지 말 것"을 과제문에 명시한다. 첫 다크 풍 작업에서 Codex 가 피부를 회색으로 바꾸고 눈을 그늘 띠로 덮어 유령처럼 보였다.
 - Bash 는 `run_in_background: true`, timeout 600000. 끝나면 알림이 온다. 폴링하지 않는다.
 - 토큰을 아끼려면 `-c model_reasoning_effort=high` 를 붙인다.
 
