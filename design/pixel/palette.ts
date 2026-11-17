@@ -1,4 +1,4 @@
-import { compose, shiftDown, type Part } from './parts'
+import { compose, type Part } from './parts'
 import { CANVAS_H, CANVAS_W, type PixelMap } from './types'
 
 /**
@@ -28,8 +28,9 @@ export const DEFAULT_APPEARANCE: Record<string, string> = {
   skin: '#f3c9a6', skinShadow: '#c7a588', hair: '#3b2a1a', hairShadow: '#291d12', outfit: '#e94560', outfitDark: '#a3303f',
 }
 
-/** 파츠 목록 → 2프레임(idle: 1px 바운스) 픽셀맵 */
+/** 파츠 목록 → 2프레임(idle: 같은 자세 + 눈 감김) 픽셀맵. 가리는 장식과 색 치환도 동일하게 합성한다. */
 export const toPixelMap = (parts: Part[], recolor?: Record<string, string>): PixelMap => {
   const f0 = compose(parts, recolor)
-  return { kind: 'pixelmap', w: CANVAS_W, h: CANVAS_H, frames: [f0, shiftDown(f0, 1)], palette: PALETTE }
+  const f1 = compose(parts.map((p) => p.blinkRows ? { ...p, rows: p.blinkRows } : p), recolor)
+  return { kind: 'pixelmap', w: CANVAS_W, h: CANVAS_H, frames: [f0, f1], palette: PALETTE }
 }
