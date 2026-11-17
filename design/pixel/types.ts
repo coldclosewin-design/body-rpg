@@ -12,7 +12,7 @@ export interface PixelMap {
   kind: 'pixelmap'
   w: number
   h: number
-  /** 프레임별 행 문자열. '.' 는 투명 */
+  /** 프레임별 행 문자열. '.' 는 투명. toPixelMap은 같은 자세의 기본/눈 감김 2프레임을 만든다. */
   frames: string[][]
   /** 문자 → 색상(hex) 또는 팔레트 역할 */
   palette: Record<string, string | PaletteRole>

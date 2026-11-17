@@ -5,12 +5,13 @@ import { writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { CHARACTERS } from './characters'
-import { compose } from './parts'
-import { DEFAULT_APPEARANCE, PALETTE } from './palette'
+import { DEFAULT_APPEARANCE, PALETTE, toPixelMap } from './palette'
 
 const SCALE = Number(process.argv[2] ?? 6)
 const COLS = 5
 const CELL_W = 24, CELL_H = 32, PAD = 4
+// 한 칸에 기본(왼쪽) / 눈 감김(오른쪽). 두 프레임을 같은 바닥선에서 비교한다.
+const PAIR_W = CELL_W * 2 + PAD
 const APPEAR = DEFAULT_APPEARANCE
 const BG: [number, number, number] = [26, 26, 46]
 const CELL_BG: [number, number, number] = [22, 33, 62]
@@ -24,23 +25,25 @@ const colorOf = (ch: string): [number, number, number] | null => {
 }
 
 const rows = Math.ceil(CHARACTERS.length / COLS)
-const W = (COLS * (CELL_W + PAD) + PAD) * SCALE
+const W = (COLS * (PAIR_W + PAD) + PAD) * SCALE
 const H = (rows * (CELL_H + PAD) + PAD) * SCALE
 const px = new Uint8Array(W * H * 3)
 const put = (x: number, y: number, c: [number, number, number]) => { const o = (y * W + x) * 3; px[o] = c[0]; px[o + 1] = c[1]; px[o + 2] = c[2] }
 for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) put(x, y, BG)
 
 CHARACTERS.forEach((ch, i) => {
-  const cx = (PAD + (i % COLS) * (CELL_W + PAD)) * SCALE
+  const cx = (PAD + (i % COLS) * (PAIR_W + PAD)) * SCALE
   const cy = (PAD + Math.floor(i / COLS) * (CELL_H + PAD)) * SCALE
-  for (let y = 0; y < CELL_H * SCALE; y++) for (let x = 0; x < CELL_W * SCALE; x++) put(cx + x, cy + y, CELL_BG)
-  const frame = compose(ch.parts, ch.recolor)
-  frame.forEach((row, y) => {
-    for (let x = 0; x < row.length; x++) {
-      const c = colorOf(row[x])
-      if (!c) continue
-      for (let dy = 0; dy < SCALE; dy++) for (let dx = 0; dx < SCALE; dx++) put(cx + x * SCALE + dx, cy + y * SCALE + dy, c)
-    }
+  for (let y = 0; y < CELL_H * SCALE; y++) for (let x = 0; x < PAIR_W * SCALE; x++) put(cx + x, cy + y, CELL_BG)
+  toPixelMap(ch.parts, ch.recolor).frames.forEach((frame, f) => {
+    const fx = cx + f * (CELL_W + PAD) * SCALE
+    frame.forEach((row, y) => {
+      for (let x = 0; x < row.length; x++) {
+        const c = colorOf(row[x])
+        if (!c) continue
+        for (let dy = 0; dy < SCALE; dy++) for (let dx = 0; dx < SCALE; dx++) put(fx + x * SCALE + dx, cy + y * SCALE + dy, c)
+      }
+    })
   })
 })
 
@@ -58,4 +61,4 @@ const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(W, 0); ihdr.writeUInt32BE(H, 4
 const png = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), chunk('IHDR', ihdr), chunk('IDAT', deflateSync(raw)), chunk('IEND', Buffer.alloc(0))])
 const out = join(dirname(fileURLToPath(import.meta.url)), '..', 'character-sheet.png')
 writeFileSync(out, png)
-console.log(`${out} ${W}x${H}, ${CHARACTERS.length} characters`)
+console.log(`${out} ${W}x${H}, ${CHARACTERS.length} characters, open / blink pairs at ${SCALE}x`)

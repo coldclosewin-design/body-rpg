@@ -5,6 +5,8 @@
  */
 export interface Part {
   rows: string[]
+  /** 눈을 감은 행. 같은 위치·레이어에서 합성하므로 얼굴 장식은 그대로 눈을 가린다. */
+  blinkRows?: string[]
   x?: number
   y?: number
   /** 플레이스홀더/색 치환 */
@@ -34,7 +36,7 @@ export function compose(parts: Part[], globalMap?: Record<string, string>): stri
   return grid.map((r) => r.map((ch) => globalMap?.[ch] ?? ch).join(''))
 }
 
-/** 프레임을 dy 만큼 아래로 민다 (idle 애니메이션용) */
+/** 프레임을 dy 만큼 아래로 미는 범용 유틸리티. idle에는 사용하지 않는다. */
 export const shiftDown = (rows: string[], dy: number): string[] => {
   const blank = '.'.repeat(rows[0]?.length ?? W)
   const out = [...rows]
@@ -43,64 +45,69 @@ export const shiftDown = (rows: string[], dy: number): string[] => {
 }
 
 // ───────────────────────── 머리 (y=2) ─────────────────────────
-export const HEAD = part([
+const HEAD_ROWS = [
   '.......KKKKKKKKKK.......',
   '......KSSSSSSSSSSK......',
-  '.....KSSSSSSSSSSSSK.....',
-  '.....KSSSSSSSSSSSSK.....',
-  '.....KSSSSSSSSSSSSK.....',
-  '.....KSSSSSSSSSSSSK.....',
-  '.....KSSSEESSSEESSK.....',
-  '.....KSSSEESSSEESSK.....',
-  '.....KSSSSSSSSSSSSK.....',
-  '.....KSsSSSSSSSSsSK.....',
-  '......KSSSSSSSSSSK......',
-  '.......KSSssssSSK.......',
+  '.....KSSSSSSSSSSssK.....',
+  '.....KSSSSSSSSSSssK.....',
+  '.....KSSSSSSSSSSssK.....',
+  '.....KSSSSSSSSSSssK.....',
+  '.....KSSSWESSSWESsK.....',
+  '.....KSSSEESSSEESsK.....',
+  '.....KSSSSSSSSSSssK.....',
+  '.....KSsSSSSSSSsssK.....',
+  '......KSSSSSSSSssK......',
+  '.......KSSssssssK.......',
   '........KKKKKKKK........',
   '..........KSSK..........',
-], 2)
+]
+
+export const HEAD: Part = {
+  ...part(HEAD_ROWS, 2),
+  blinkRows: HEAD_ROWS.map((row, y) => y === 6 ? row.replaceAll('WE', 'SS') : row),
+}
 
 // ───────────────────────── 머리카락 ─────────────────────────
 export const HAIR_SHORT = part([
   '.......KKKKKKKKKK.......',
-  '......KHHHHHHHHHHK......',
-  '.....KHHHHHHHHHHHHK.....',
-  '.....KHHhSSSSSShHHK.....',
-  '.....KHhSSSSSSSShHK.....',
-  '.....KhSSSSSSSSSShK.....',
+  '......KHHHHHHHHhhK......',
+  '.....KHHHHHHHHHhhhK.....',
+  '.....KHHhSSSSSShhhK.....',
+  '.....KHhSSSSSSSshhK.....',
+  '.....KhSSSSSSSSsshK.....',
 ], 2)
 
 export const HAIR_LONG = part([
   '.......KKKKKKKKKK.......',
-  '......KHHHHHHHHHHK......',
-  '.....KHHHHHHHHHHHHK.....',
+  '......KHHHHHHHHhhK......',
+  '.....KHHHHHHHHHhhhK.....',
   '.....KHHHhSSSShHHHK.....',
   '.....KHHSSSSSSSSHHK.....',
   '.....KHhSSSSSSSShHK.....',
-  '....KHK..........KHK....',
-  '....KHK..........KHK....',
-  '....KHK..........KHK....',
-  '....KHK..........KHK....',
-  '....KHhK........KhHK....',
-  '.....KHHK......KHHK.....',
+  '....KHK..........KhK....',
+  '....KHK..........KhK....',
+  '....KHK..........KhK....',
+  '....KHK..........KhK....',
+  '....KHhK........KhhK....',
+  '.....KHHK......KhhK.....',
   '......KKKK....KKKK......',
 ], 2)
 
 export const HAIR_SPIKY = part([
   '......K..K..K..K..K.....',
   '.....KHKKHKKHKKHKKHK....',
-  '.....KHHHHHHHHHHHHK.....',
-  '.....KHHHHHHHHHHHHK.....',
-  '.....KHHHHHHHHHHHHK.....',
+  '.....KHHHHHHHHHhhhK.....',
+  '.....KHHHHHHHHHhhhK.....',
+  '.....KHHHHHHHHHhhhK.....',
   '.....KHhSSSSSSSShHK.....',
   '.....KhSSSSSSSSSShK.....',
 ], 0)
 
 export const PONYTAIL = part([
-  'KHK.',
+  '.KK.',
   'KHHK',
-  'KHHK',
-  '.KHK',
+  'KHhK',
+  'KHhK',
   '.KhK',
   '..K.',
 ], 4, 19)
@@ -110,9 +117,9 @@ export const BEARD = part([
   '.....KHHSSSSSSSSHHK.....',
   '......KHHHSSSSHHHK......',
   '.......KHHHhhHHHK.......',
-  '.......KHHHHHHHHK.......',
-  '........KHHHHHHK........',
-  '.........KHHHHK.........',
+  '.......KHHHHhhhhK.......',
+  '........KHHHhhhK........',
+  '.........KHHhhK.........',
   '..........KKKK..........',
 ], 10)
 
@@ -121,31 +128,35 @@ export const LONG_BEARD = (c1: string, c2: string) => part([
   '.....K11SSSSSSSS11K.....',
   '......K111SSSS111K......',
   '.......K11122111K.......',
-  '.......K11111111K.......',
-  '.......K11111111K.......',
-  '.......K11111111K.......',
-  '........K111111K........',
+  '.......K11111222K.......',
+  '.......K11111222K.......',
+  '.......K11111222K.......',
+  '........K111222K........',
   '........K121121K........',
-  '........K111111K........',
-  '.........K1111K.........',
+  '........K111222K........',
+  '.........K1122K.........',
   '..........KKKK..........',
 ], 10, 0, { 1: c1, 2: c2 })
 
 // ───────────────────────── 모자·액세서리 ─────────────────────────
 export const HEADBAND = part([
-  '.....KRRRRRRRRRRRRK.....',
-  '.....KrrrrrrrrrrrrK.....',
-], 6)
+  '.....KKKKKKKKKKKKKK.....',
+  '.....KRRRRRRRRrrrrK.....',
+  '.....KKKKKKKKKKKKKK.....',
+], 5)
 
 export const SUNGLASSES = part([
-  '.....KSKXXXKKXXXKSK.....',
-  '.....KSKxXXKKxXXKSK.....',
-], 8)
+  '.....KSKKKKKKKKKKSK.....',
+  '.....KKWXXKKWXXKKsK.....',
+  '.....KKXXXKKXXXKKsK.....',
+  '.....KSKKKKKKKKKKsK.....',
+], 7)
 
 export const CROWN = part([
-  '........Y..YY..Y........',
-  '........YYYYYYYY........',
-  '.......KYyYYYYyYK.......',
+  '........KK.KK.KK........',
+  '........KYKYYKYK........',
+  '.......KYYYYYYYYK.......',
+  '.......KKKKKKKKKK.......',
 ], 0)
 
 export const POINTED_HAT = (c1: string, c2: string) => part([
@@ -161,38 +172,39 @@ export const POINTED_HAT = (c1: string, c2: string) => part([
 
 export const HELMET = (c1: string, c2: string) => part([
   '........KKKKKKKK........',
-  '.......K11111111K.......',
-  '......K1111111111K......',
-  '.....K111111111111K.....',
-  '.....K111111111111K.....',
-  '.....K111111111111K.....',
+  '.......K11111122K.......',
+  '......K1111111122K......',
+  '.....K111111111222K.....',
+  '.....K111111111222K.....',
+  '.....K111111111222K.....',
   '.....KKKKKKKKKKKKKK.....',
   '.....K1KXXXXXXXXK1K.....',
   '.....K1KXXXXXXXXK1K.....',
   '.....K1KKKKKKKKKK1K.....',
-  '.....K111111111111K.....',
+  '.....K111111111222K.....',
   '......K2222222222K......',
   '.......K22222222K.......',
   '........KKKKKKKK........',
 ], 1, 0, { 1: c1, 2: c2 })
 
 export const PLUME = part([
-  '...........KRRK.........',
-  '..........KRRRRK........',
-  '..........KrrrrK........',
+  '...........KKKK.........',
+  '..........KRRRrK........',
+  '...........KrrK.........',
+  '...........KKKK.........',
 ], 0)
 
 export const HOOD = (c1: string, c2: string) => part([
   '........KKKKKKKK........',
-  '.......K11111111K.......',
-  '......K1111111111K......',
-  '.....K111111111111K.....',
+  '.......K11111122K.......',
+  '......K1111111122K......',
+  '.....K111111111222K.....',
   '.....K12KKKKKKKK21K.....',
-  '.....K1K........K1K.....',
-  '.....K1K........K1K.....',
-  '.....K1K........K1K.....',
-  '.....K1K........K1K.....',
-  '.....K1K........K1K.....',
+  '.....K1K........K2K.....',
+  '.....K1K........K2K.....',
+  '.....K1K........K2K.....',
+  '.....K1K........K2K.....',
+  '.....K1K........K2K.....',
   '.....K12K......K21K.....',
   '......K11K....K11K......',
   '.......K1K....K1K.......',
@@ -201,38 +213,43 @@ export const HOOD = (c1: string, c2: string) => part([
 
 export const SWIM_CAP = (c1: string, c2: string) => part([
   '........KKKKKKKK........',
-  '.......K11111111K.......',
-  '......K1111111111K......',
-  '.....K111111111111K.....',
+  '.......K11111122K.......',
+  '......K1111111122K......',
+  '.....K111111111222K.....',
   '.....K122222222221K.....',
   '.....KKKKKKKKKKKKKK.....',
 ], 1, 0, { 1: c1, 2: c2 })
 
-export const GOGGLES = part(['.....KXKCCKXXKCCKXK.....'], 7)
+export const GOGGLES = part([
+  '.....KSKKKKKKKKKKsK.....',
+  '.....KKWCCKKWCCKKsK.....',
+  '.....KKCccKKCccKKsK.....',
+  '.....KSKKKKKKKKKKsK.....',
+], 7)
 
 // ───────────────────────── 몸통 (y=15) ─────────────────────────
 export const SHIRT = (c1: string, c2: string) => part([
   '........KKKSSKKK........',
-  '.......K11111111K.......',
-  '......K1111111111K......',
-  '.....K111111111111K.....',
-  '.....K1K11111111K1K.....',
-  '.....KSK11111111KSK.....',
-  '.....KSK11111111KSK.....',
-  '....KSSK12222221KSSK....',
+  '.......K11111122K.......',
+  '......K1111111122K......',
+  '.....K111111111222K.....',
+  '.....K1K11111122K1K.....',
+  '.....KSK11111122KSK.....',
+  '.....KSK11111122KSK.....',
+  '....KSSK12222222KSsK....',
   '....KKKK22222222KKKK....',
   '........KKKKKKKK........',
 ], 15, 0, { 1: c1, 2: c2 })
 
 export const JACKET = (c1: string, c2: string) => part([
   '........KK1SS1KK........',
-  '.......K11111111K.......',
-  '......K1111111111K......',
-  '.....K111111111111K.....',
+  '.......K11111122K.......',
+  '......K1111111122K......',
+  '.....K111111111222K.....',
   '.....K1K11122111K1K.....',
   '.....KWK11122111KWK.....',
   '.....K1K11122111K1K.....',
-  '....KSSK12222221KSSK....',
+  '....KSSK12222222KSsK....',
   '....KKKK22222222KKKK....',
   '........KKKKKKKK........',
 ], 15, 0, { 1: c1, 2: c2 })
@@ -242,10 +259,10 @@ export const TANK = (c1: string, c2: string) => part([
   '.......KS1SSSS1SK.......',
   '......KSS1SSSS1SSK......',
   '.....KSSS111111SSSK.....',
-  '.....KSK11111111KSK.....',
-  '.....KSK11111111KSK.....',
-  '.....KSK11111111KSK.....',
-  '....KSSK12222221KSSK....',
+  '.....KSK11111122KSK.....',
+  '.....KSK11111122KSK.....',
+  '.....KSK11111122KSK.....',
+  '....KSSK12222222KSsK....',
   '....KKKK22222222KKKK....',
   '........KKKKKKKK........',
 ], 15, 0, { 1: c1, 2: c2 })
@@ -253,45 +270,46 @@ export const TANK = (c1: string, c2: string) => part([
 /** 맨몸 + 벨트(1 벨트색, 2 버클) */
 export const BARE = (belt: string, buckle: string) => part([
   '........KKKSSKKK........',
-  '.......KSSSSSSSSK.......',
-  '......KSSSSSSSSSSK......',
-  '.....KSSSSSSSSSSSSK.....',
+  '.......KSSSSSSssK.......',
+  '......KSSSSSSSSssK......',
+  '.....KSSSSSSSSSsssK.....',
   '.....KSKSsSSSSsSKSK.....',
-  '.....KSKSSSSSSSSKSK.....',
+  '.....KSKSSSSSSssKSK.....',
   '.....KSKSSsSSsSSKSK.....',
   '....KSSKSSsSSsSSKSSK....',
-  '....KKKKSSSSSSSSKKKK....',
+  '....KKKKSSSSSSssKKKK....',
   '.......K11122111K.......',
 ], 15, 0, { 1: belt, 2: buckle })
 
 /** 긴 로브 (다리까지 덮음) 1 주색 2 음영 3 띠 */
 export const ROBE = (c1: string, c2: string, sash: string) => part([
   '........KK1SS1KK........',
-  '.......K11111111K.......',
-  '......K1111111111K......',
-  '.....K111111111111K.....',
-  '.....K1K11111111K1K.....',
-  '.....K1K11111111K1K.....',
-  '.....K1K11111111K1K.....',
-  '....KSSK11111111KSSK....',
+  '.......K11111122K.......',
+  '......K1111111122K......',
+  '.....K111111111222K.....',
+  '.....K1K11111122K1K.....',
+  '.....K1K11111122K1K.....',
+  '.....K1K11111122K1K.....',
+  '....KSSK11111122KSSK....',
   '....KKKK33333333KKKK....',
-  '.......K11111111K.......',
-  '.......K11111111K.......',
-  '......K1111111111K......',
-  '......K1111111111K......',
-  '.....K112111111211K.....',
-  '.....K222222222222K.....',
+  '.......K11111122K.......',
+  '.......K11111122K.......',
+  '......K1111111122K......',
+  '......K1111111122K......',
+  '.....K111111222222K.....',
   '.....KKKKKKKKKKKKKK.....',
+  '......K2222K.K2222K.....',
+  '......KKKKKK.KKKKKK.....',
 ], 15, 0, { 1: c1, 2: c2, 3: sash })
 
 export const ARMOR = (c1: string, c2: string) => part([
   '........KKK11KKK........',
-  '......K11K1111K11K......',
+  '......KK1K1111K1KK......',
   '.....K111K1111K111K.....',
   '.....K221K1111K122K.....',
-  '.....K1K11111111K1K.....',
+  '.....K1K11111122K1K.....',
   '.....K1K11211211K1K.....',
-  '.....K1K11111111K1K.....',
+  '.....K1K11111122K1K.....',
   '....K11K22222222K11K....',
   '....KKKKYYYYYYYYKKKK....',
   '.......K22222222K.......',
@@ -308,7 +326,7 @@ export const CAPE = (c1: string, c2: string) => part([
   '.....K11K......K11K.....',
   '.....K11K......K11K.....',
   '....K1111K....K1111K....',
-  '..K111111111111111111K..',
+  '..KK1111111111111111KK..',
   '..K111111111111111111K..',
   '..K222222222222222222K..',
   '..KKKKKKKKKKKKKKKKKKKK..',
@@ -316,11 +334,11 @@ export const CAPE = (c1: string, c2: string) => part([
 
 // ───────────────────────── 다리 (y=25) ─────────────────────────
 export const PANTS = (c1: string, c2: string, shoes: string) => part([
-  '.......K11111111K.......',
-  '.......K11111111K.......',
-  '.......K111KK111K.......',
-  '.......K111K.K111K......',
-  '.......K111K.K111K......',
+  '.......K11111122K.......',
+  '.......K11111122K.......',
+  '.......K111KK122K.......',
+  '.......K112K.K122K......',
+  '.......K112K.K122K......',
   '......K3333K.K3333K.....',
   '......KKKKKK.KKKKKK.....',
 ], 25, 0, { 1: c1, 2: c2, 3: shoes })
@@ -329,54 +347,86 @@ export const SHORTS = (c1: string, shoes: string) => part([
   '.......K11111111K.......',
   '.......K11111111K.......',
   '.......K111KK111K.......',
-  '.......KSSSK.KSSSK......',
-  '.......KSSSK.KSSSK......',
+  '.......KSSsK.KSssK......',
+  '.......KSSsK.KSssK......',
   '......K3333K.K3333K.....',
   '......KKKKKK.KKKKKK.....',
 ], 25, 0, { 1: c1, 3: shoes })
 
 // ───────────────────────── 소품 ─────────────────────────
 export const SWORD = part([
-  '.K.',
-  'KLK', 'KLK', 'KLK', 'KLK', 'KLK', 'KLK', 'KLK',
-  'KYK',
-  'KNK', 'KNK', 'KNK',
-  '.K.',
-], 10, 19)
+  '..KK..',
+  '.KLLK.',
+  '.KLlK.',
+  '.KLlK.',
+  '.KLlK.',
+  '.KLlK.',
+  '.KLlK.',
+  '.KLlK.',
+  'KYYYYK',
+  '.KKKK.',
+  '.KllK.',
+  '.KllK.',
+  'KSSSlK',
+  'KSsslK',
+  '.KKKK.',
+], 10, 18)
 
 export const SHIELD = part([
   '.KKKK.',
-  'KLLLLK',
-  'KLRRLK',
-  'KLRRLK',
-  'KLLLLK',
-  'KLllLK',
+  'KLLLlK',
+  'KLRRlK',
+  'KLRrlK',
+  'KLLLlK',
+  'KLlllK',
   '.KllK.',
   '..KK..',
-], 15, 0)
+], 16)
 
 export const DUMBBELL = part([
-  'KKKKK', 'KLLLK', 'KLlLK', 'KKKKK',
-  '.KXK.', '.KXK.', '.KXK.',
-  'KKKKK', 'KLLLK', 'KLlLK', 'KKKKK',
-], 15, 19)
+  'KKKKKK',
+  'KLLLlK',
+  'KLlllK',
+  'KKKKKK',
+  '.KLlK.',
+  '.KLlK.',
+  '.KSSK.',
+  '.KSsK.',
+  'KKKKKK',
+  'KLLLlK',
+  'KLlllK',
+  'KKKKKK',
+], 15, 18)
 
 export const BALL = part([
   '.KKKK.',
   'KWWWWK',
   'KWKKWK',
-  'KWKKWK',
-  'KxWWxK',
+  'KWKKLK',
+  'KWLLLK',
   '.KKKK.',
 ], 26, 18)
 
 export const BOW = part([
-  '.KK.',
-  'KNK.',
-  'KN.K', 'KN.K', 'KN.K', 'KN.K', 'KN.K', 'KN.K', 'KN.K', 'KN.K', 'KN.K', 'KN.K',
-  'KNK.',
-  '.KK.',
-], 10, 19)
+  '.KKK..',
+  'KKNnK.',
+  'K.KNnK',
+  'K.KNnK',
+  'K.KNnK',
+  'K.KNnK',
+  'K.KNnK',
+  'K.KNnK',
+  'K.KNnK',
+  'K.KNnK',
+  'K.KNnK',
+  'K.KNnK',
+  'K.KNnK',
+  'KKSSnK',
+  'KKSsnK',
+  'K.KNnK',
+  'KKNnK.',
+  '.KKK..',
+], 9, 18)
 
 export const TORCH = part([
   '.F.',
@@ -387,29 +437,67 @@ export const TORCH = part([
 ], 7, 20)
 
 export const STAFF = (gem: string, gemDark: string) => part([
-  '.KK.',
-  'K11K',
-  'K21K',
-  '.KK.',
-  ...Array(18).fill('.KNK'),
+  '.KKK.',
+  'KW11K',
+  'K122K',
+  '.KKK.',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  'KSSnK',
+  'KSsnK',
+  '.KNnK',
+  '..KK.',
 ], 4, 19, { 1: gem, 2: gemDark })
 
 export const AXE = part([
-  '.KKK',
-  'KLLK',
-  'KLLK',
-  'KLlK',
-  ...Array(16).fill('.KNK'),
-], 7, 19)
+  '.KKKKK',
+  'KLLLlK',
+  '.KKKlK',
+  '..KLlK',
+  '..KLlK',
+  '..KLlK',
+  '..KLlK',
+  '..KLlK',
+  '..KLlK',
+  '..KLlK',
+  '..KLlK',
+  '..KLlK',
+  '..KLlK',
+  '..KLlK',
+  '.KSSlK',
+  '.KSslK',
+  '..KLlK',
+  '..KLlK',
+  '...KK.',
+], 7, 18)
 
 export const CLUB = part([
-  '.KK.',
-  'KNNK',
-  'KNNK',
-  'KNnK',
-  'KNnK',
-  '.KK.',
-  ...Array(8).fill('.KNK'),
+  '.KKK.',
+  'KNNnK',
+  'KNNnK',
+  'KNnnK',
+  'KNnnK',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  '.KNnK',
+  'KSSnK',
+  'KSsnK',
+  '.KNnK',
+  '..KK.',
 ], 12, 19)
 
 const GLOVE = ['.KK.', 'KRRK', 'KRrK', '.KK.']
@@ -417,18 +505,22 @@ export const GLOVE_L = part(GLOVE, 20, 3)
 export const GLOVE_R = part(GLOVE, 20, 17)
 
 export const SPEED_LINES = part([
-  'xxx.....',
-  '........',
-  '.xxxx...',
-  '........',
-  'xxx.....',
-], 16, 0)
+  'KKKK..',
+  'KxxKK.',
+  'KKKK..',
+  '......',
+  '.KKKKK',
+  '.KxxxK',
+  '.KKKKK',
+], 16)
 
 export const WAVES = part([
-  '.CC..CC..CC..CC..CC..CC.',
-  'CCCCCCCCCCCCCCCCCCCCCCCC',
-  'cCCcCCcCCcCCcCCcCCcCCcCC',
-], 29, 0)
+  '.KK..KK..KK..KK..KK..KK.',
+  'KCCKKCCKKCCKKCCKKCCKKCCK',
+  'KCCCCCCCCCCCCCCCCCCCCccK',
+  'KccccccccccccccccccccccK',
+  'KKKKKKKKKKKKKKKKKKKKKKKK',
+], 27)
 
 export const EAR_L = part(['KK..', 'KSK.', 'KSSK', 'KSSK', '.KK.'], 5, 2)
 export const EAR_R = part(['..KK', '.KSK', 'KSSK', 'KSSK', '.KK.'], 5, 18)
@@ -441,18 +533,28 @@ export const NUMBER10 = part([
   '.W.WWW..',
 ], 17, 8)
 
-export const BIB = part(['WWWWWW', 'WKKWKW', 'WWWWWW'], 18, 9)
+export const BIB = part([
+  'KKKKKKKK',
+  'KWWWWWWK',
+  'KWKWWKWK',
+  'KKKKKKKK',
+], 18, 8)
 
-export const BEADS = part(['Y.Y.Y.Y.', '.Y.Y.Y.Y'], 16, 8)
+export const BEADS = part([
+  '.KK.KK.KK.',
+  'KYKKYKKYKK',
+  '.KKKYKKYKK',
+  '...KK.KK..',
+], 16, 7)
 
 export const ROPE = part([
-  '.KKK.',
-  'KAAAK',
-  'KA.AK',
-  'KA.AK',
-  'KAAAK',
-  '.KKK.',
-], 21, 1)
+  '.KKKK.',
+  'KAAaaK',
+  'KAKKaK',
+  'KAKKaK',
+  'KAAaaK',
+  '.KKKK.',
+], 21)
 
 // ───────────────────────── 분야 스킨 파츠: 토커·사운드메이커·슬리퍼 ─────────────────────────
 /** 감은 눈 (수면용). HEAD 의 눈 2줄을 덮어 1px 로 줄인다 */
@@ -461,7 +563,7 @@ export const CLOSED_EYES = part([
   '.....KSSSEESSSEESSK.....',
 ], 8)
 
-/** 동그란 안경. 렌즈 테 K, 눈은 HEAD 의 것을 그대로 쓴다 */
+/** 동그란 안경. 렌즈와 반사광 실루엣을 우선해 두 프레임에서 고정한다 */
 export const ROUND_GLASSES = part([
   '.......KKKKK.KKKKK......',
   '.......KWEWKKKWEWK......',
@@ -481,12 +583,12 @@ export const EYE_MASK = (c1: string, c2: string) => part([
 export const NIGHTCAP = (c1: string, c2: string) => part([
   '........KKKKKKKK........',
   '.......K11111111K.......',
-  '......K111111111111KKKKK',
-  '.....K11111111111112222K',
+  '......K1111111111KKKKK..',
+  '.....K1111111111222222K.',
   '.....K122222222221KK22K.',
   '.....KWWWWWWWWWWWWK.K2K.',
-  '.....KLLLLLLLLLLLLK.KWWK',
-  '...................KWWWK',
+  '.....KKKKKKKKKKKKKK.KKK.',
+  '...................KWWLK',
   '...................KWLLK',
   '....................KKK.',
 ], 1, 0, { 1: c1, 2: c2 })
@@ -494,9 +596,9 @@ export const NIGHTCAP = (c1: string, c2: string) => part([
 /** 챙 넓은 음유시인 모자 (FEATHER 와 같이 쓴다) */
 export const FEATHER_CAP = (c1: string, c2: string) => part([
   '........KKKKKKKK........',
-  '.......K11111111K.......',
-  '......K1111111111K......',
-  '.....K111111111111K.....',
+  '.......K11111122K.......',
+  '......K1111111122K......',
+  '.....K111111111222K.....',
   '....KK122222222221KK....',
   '...K2222222222222222K...',
   '....KKKKKKKKKKKKKKKK....',
@@ -504,11 +606,12 @@ export const FEATHER_CAP = (c1: string, c2: string) => part([
 
 /** 모자 오른쪽에 꽂은 붉은 깃털 */
 export const FEATHER = part([
-  '....KK',
+  '...KKK',
   '..KRRK',
-  '.KRRK.',
-  'KRrK..',
-  'KrK...',
+  '.KRRrK',
+  'KRrrK.',
+  'KrrK..',
+  '.KK...',
 ], 0, 17)
 
 /** 큰 헤드폰: 머리 위 밴드 + 양쪽 컵 */
@@ -554,8 +657,8 @@ export const TIE = part([
 export const PILLOW = part([
   '..KKKKKKKK..',
   '.KWWWWWWWWK.',
-  'KWWWWWWWWWWK',
-  'KWWWWWWWWWWK',
+  'KWWWWWWWWLLK',
+  'KWWWWWWWWLLK',
   'KWLLLLLLLLWK',
   '.KLLLLLLLLK.',
   '..KKKKKKKK..',
@@ -563,34 +666,41 @@ export const PILLOW = part([
 
 /** 펼친 책 */
 export const BOOK = part([
-  'KKKKKKKKKKKK',
-  'KWWWWKKWWWWK',
-  'KWLLWKKWLLWK',
-  'KWWWWKKWWWWK',
-  'KWLLWKKWLLWK',
+  '.KKKK..KKKK.',
+  'KWWWLKKWWWLK',
+  'KWLLLKKWLLLK',
+  'KWWWLKKWWWLK',
+  'KWLLLKKWLLLK',
   'KKKKKKKKKKKK',
 ], 18, 6)
 
 /** 미니 신디사이저 (노브 4개 + 건반) */
 export const SYNTH = part([
   'KKKKKKKKKK',
-  'KXRXGXYXBK',
+  'KXRXRXRXRK',
   'KWWKWWKWWK',
-  'KWWWWWWWWK',
+  'KWWKWWKWWK',
   'KKKKKKKKKK',
 ], 19, 7)
 
 /** 손마이크 */
 export const MIC = part([
-  '.KK.',
-  'KLLK',
-  'KLlK',
-  'KllK',
-  '.KK.',
-  ...Array(8).fill('.KXK'),
-], 12, 19)
+  '.KKKK.',
+  'KLLLlK',
+  'KLlllK',
+  '.KllK.',
+  '..KK..',
+  '..KXK.',
+  '..KXK.',
+  '..KXK.',
+  '..KXK.',
+  '..KXK.',
+  '.KSSK.',
+  '.KSsK.',
+  '..KK..',
+], 12, 18)
 
-/** 류트: 세로 목 + 둥근 몸통. 몸통 파츠 뒤에 그려 오른손 앞에 오게 한다 */
+/** 류트: 세로 목 + 둥근 몸통. 셔츠 다음에 그려 오른팔 앞에서 분리한다 */
 export const LUTE = part([
   '..KKKK.',
   '..KNNnK',
@@ -602,12 +712,12 @@ export const LUTE = part([
   '..KNnK.',
   '..KNnK.',
   '.KKKKK.',
-  'KAALLaK',
-  'KAALLaK',
-  'KAXLLXK',
-  'KAXLLXK',
-  'KAALLaK',
-  'KaaLLaK',
+  'KNNLLnK',
+  'KNNLLnK',
+  'KNKLLKK',
+  'KNKLLKK',
+  'KNNLLnK',
+  'KnnLLnK',
   '.KKKKK.',
 ], 8, 16)
 
@@ -622,34 +732,27 @@ export const SPEECH_BUBBLE = part([
   '....KK.',
 ], 0, 0)
 
-/** 왼쪽 위로 흩날리는 음표 2개 */
+/** 왼쪽 위 6×7 음표. 검은 테두리와 2px 음표 머리 */
 export const NOTES = part([
-  '..Y..',
-  '..YY.',
-  '..Y..',
-  'YYY..',
-  'YYY..',
-  '.....',
-  '...Y.',
-  '...YY',
-  '...Y.',
-  '.YYY.',
-  '.YYY.',
-], 0, 0)
+  '..KK..',
+  '..KRK.',
+  '..KRKK',
+  '.KKRrK',
+  'KRRKK.',
+  'KrrK..',
+  '.KK...',
+], 0)
 
-/** 왼쪽 위 zZ */
+/** 왼쪽 위 7×7 Z. 검은 테두리 안의 흰 획 */
 export const ZZZ = part([
-  'WWWWW',
-  '...W.',
-  '..W..',
-  '.W...',
-  'WWWWW',
-  '.....',
-  '.WWWW',
-  '...W.',
-  '..W..',
-  '.WWWW',
-], 0, 0)
+  'KKKKKKK',
+  'KWWWWWK',
+  'KKKKWK.',
+  '..KWK..',
+  '.KWKKKK',
+  'KWWWWWK',
+  'KKKKKKK',
+], 0)
 
 // ── 전투 직업 파츠: 미배정 시즌 보상 스킨 ──
 /** 얼굴이 드러나는 뿔 투구. 1 주색 2 음영, 뿔은 고정 은색 */
@@ -722,13 +825,13 @@ export const QUIVER = part([
 export const RECURVE_BOW = part([
   '..KKK..',
   '..KNnK.',
-  '.KLNnK.',
-  'KL.KNnK',
-  ...Array(6).fill('KL.KNnK'),
+  '.KKNnK.',
+  'KLKKNnK',
+  ...Array(6).fill('KLKKNnK'),
   'KSSKNnK',
   'KSSKNnK',
-  ...Array(4).fill('KL.KNnK'),
-  '.KLNnK.',
+  ...Array(4).fill('KLKKNnK'),
+  '.KKNnK.',
   '..KNnK.',
   '..KnnK.',
   '...KK..',
@@ -842,8 +945,11 @@ export const SHIRT_COLLAR = part(['W....W', 'W.....'], 16, 9)
 
 /** 눈썹 아래 1px 피부 그늘. 눈(E)은 HEAD 의 것을 그대로 쓴다 */
 export const BROW_SHADOW = part(['ssssssss'], 7, 8)
-/** 오른쪽 눈만 붉게 빛남. HEAD 의 눈 위에 덮는다 */
-export const RED_EYE = part(['RR', 'rr'], 8, 14)
+/** 오른쪽 눈의 붉은 빛 1px. 흰 반사광과 아래쪽 E 눈동자를 유지한다 */
+export const RED_EYE: Part = {
+  ...part(['WR', 'EE'], 8, 14),
+  blinkRows: ['SS', 'EE'],
+}
 
 /** 손을 낮춰 짚는 대검. 검날은 3px 은색 면과 K 외곽선, 끝은 y=31 */
 export const GROUNDED_SWORD = part([

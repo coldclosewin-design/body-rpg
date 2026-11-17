@@ -56,11 +56,11 @@ export const CHARACTERS: CharacterDef[] = [
   },
   {
     key: 'knight', label: '철의 기사', desc: '리프터의 정점. 강철 갑옷, 붉은 깃털 투구, 검과 방패.',
-    parts: [P.HEAD, P.HELMET('L', 'l'), P.PLUME, P.ARMOR('L', 'l'), P.PANTS('X', 'x', 'l'), P.SWORD, P.SHIELD],
+    parts: [P.HEAD, P.HELMET('L', 'l'), P.PLUME, P.ARMOR('L', 'l'), P.PANTS('x', 'X', 'l'), P.SWORD, P.SHIELD],
   },
   {
     key: 'champion', label: '챔피언', desc: '시즌의 왕. 황금 갑옷, 붉은 망토, 왕관.',
-    parts: [P.CAPE('R', 'r'), P.HEAD, P.HAIR_SHORT, P.CROWN, P.ARMOR('Y', 'y'), P.PANTS('X', 'x', 'y'), P.SWORD],
+    parts: [P.CAPE('R', 'r'), P.HEAD, P.HAIR_SHORT, P.CROWN, P.ARMOR('Y', 'y'), P.PANTS('x', 'X', 'y'), P.SWORD],
   },
   {
     key: 'sage', label: '현자', desc: '계획과 기록의 마스터. 보라 로브, 흰 수염, 수정 지팡이.',
@@ -68,11 +68,11 @@ export const CHARACTERS: CharacterDef[] = [
   },
   {
     key: 'climber', label: '클라이머', desc: '벽을 오르는 자. 포니테일, 로프, 피켈.',
-    parts: [P.HEAD, P.HAIR_SHORT, P.PONYTAIL, P.TANK('C', 'c'), P.PANTS('X', 'x', 'A'), P.ROPE, P.AXE],
+    parts: [P.HEAD, P.HAIR_SHORT, P.PONYTAIL, P.TANK('C', 'c'), P.PANTS('x', 'X', 'A'), P.ROPE, P.AXE],
   },
   {
     key: 'healer', label: '힐러', desc: '회복의 수호자. 긴 머리, 흰 로브, 초록 수정 지팡이.',
-    parts: [P.HEAD, P.HAIR_LONG, P.ROBE('W', 'x', 'G'), P.STAFF('G', 'g')],
+    parts: [P.HEAD, P.HAIR_LONG, P.ROBE('W', 'L', 'G'), P.STAFF('G', 'g')],
   },
   // ── 토커(영어) ──
   {
@@ -81,7 +81,7 @@ export const CHARACTERS: CharacterDef[] = [
   },
   {
     key: 'speaker', label: '스피커', desc: '토커의 완성. 흰 셔츠에 넥타이, 손마이크와 말풍선.',
-    parts: [P.HEAD, P.HAIR_SHORT, P.SHIRT('W', 'x'), P.TIE, P.PANTS('X', 'x', 'N'), P.MIC, P.SPEECH_BUBBLE],
+    parts: [P.HEAD, P.HAIR_SHORT, P.SHIRT('W', 'x'), P.TIE, P.PANTS('x', 'X', 'N'), P.MIC, P.SPEECH_BUBBLE],
   },
   // ── 사운드메이커 ──
   {
@@ -98,18 +98,18 @@ export const CHARACTERS: CharacterDef[] = [
     parts: [P.HEAD, P.HAIR_SHORT, P.EYE_MASK('R', 'r'), P.SHIRT('C', 'c'), P.PANTS('x', 'x', 'W'), P.PILLOW],
   },
   {
-    key: 'dreamer', label: '드리머', desc: '슬리퍼의 완성. 수면모자와 줄무늬 잠옷, 머리 위로 zZ.',
+    key: 'dreamer', label: '드리머', desc: '슬리퍼의 완성. 수면모자와 줄무늬 잠옷, 머리 위로 Z.',
     parts: [P.HEAD, P.CLOSED_EYES, P.NIGHTCAP('M', 'm'), P.PAJAMA('B', 'b', 'W'), P.PANTS('B', 'b', 'A'), P.ZZZ],
   },
   // ── 전투 직업: 미배정 시즌 보상 스킨 ──
   {
     key: 'warrior', label: '전사', desc: '은발 아래 한쪽 눈을 붉게 빛내며, 흰 셔츠 깃과 검은 넥타이를 갖춘 긴 코트 차림으로 대검을 바닥에 짚는다.',
-    parts: [P.LONG_COAT('X', 'x'), P.PANTS('X', 'P', 'P'), { ...P.JACKET('X', 'x'), map: { 1: 'X', 2: 'x', W: 'X' } }, P.SHIRT_COLLAR, { ...P.TIE, map: { R: 'X', r: 'P' } }, P.HEAD, P.HAIR_SHORT, P.BROW_SHADOW, P.RED_EYE, P.GROUNDED_SWORD],
+    parts: [P.LONG_COAT('X', 'P'), P.PANTS('X', 'P', 'P'), { ...P.JACKET('X', 'P'), map: { 1: 'X', 2: 'P', W: 'X' } }, P.SHIRT_COLLAR, { ...P.TIE, map: { R: 'X', r: 'P' } }, P.HEAD, P.HAIR_SHORT, P.BROW_SHADOW, P.RED_EYE, P.GROUNDED_SWORD],
     recolor: { H: 'L', h: 'l' },
   },
   {
     key: 'archer', label: '궁수', desc: '은발을 감춘 어두운 후드와 긴 코트 아래, 낡은 가죽 화살통을 메고 은색 현의 나무 활을 조용히 내려 든다.',
-    parts: [P.LONG_COAT('X', 'P'), P.QUIVER, P.PANTS('P', 'X', 'P'), P.JACKET('X', 'P'), P.HEAD, P.HAIR_SHORT, P.HOOD('X', 'x'), P.BROW_SHADOW, P.RECURVE_BOW],
+    parts: [P.LONG_COAT('X', 'P'), P.QUIVER, P.PANTS('P', 'X', 'P'), P.JACKET('X', 'P'), P.HEAD, P.HAIR_SHORT, P.HOOD('X', 'P'), P.BROW_SHADOW, P.RECURVE_BOW],
     recolor: { H: 'L', h: 'l', W: 'L' },
   },
   {
@@ -119,7 +119,7 @@ export const CHARACTERS: CharacterDef[] = [
   },
   {
     key: 'rogue', label: '도적', desc: '은발 한 가닥만 남긴 복면과 은색 버클 아래, 찢어진 긴 망토를 한쪽으로 늘어뜨리고 쌍단검을 몸 옆에 낮춰 든다.',
-    parts: [P.TATTERED_CAPE('X', 'x'), P.PANTS('X', 'P', 'P'), P.LEATHER_ARMOR('X', 'P'), P.HEAD, P.HAIR_SHORT, P.HOOD('X', 'P'), P.FACE_WRAP('X', 'P'), P.DAGGER_L, P.DAGGER_R],
+    parts: [P.TATTERED_CAPE('X', 'P'), P.PANTS('X', 'P', 'P'), P.LEATHER_ARMOR('X', 'P'), P.HEAD, P.HAIR_SHORT, P.HOOD('X', 'P'), P.FACE_WRAP('X', 'P'), P.DAGGER_L, P.DAGGER_R],
     recolor: { H: 'L', h: 'l' },
   },
   {
