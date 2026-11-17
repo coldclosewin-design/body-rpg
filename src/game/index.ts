@@ -16,6 +16,7 @@ export * from './jobTier'
 export * from './season'
 export * from './streak'
 export * from './badges'
+export * from './celebrate'
 
 /** 화면들이 공통으로 쓰는 파생 상태를 한 번에 계산 */
 export function deriveWorld(world: World, today = todayKey()) {

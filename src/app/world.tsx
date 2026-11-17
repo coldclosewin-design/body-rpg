@@ -1,13 +1,15 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { makeRepo, type Repo } from '@/lib/repo'
-import { deriveWorld, todayKey, type Derived } from '@/game'
+import { celebrationSnapshot, deriveWorld, detectCelebrations, todayKey, type Celebration, type CelebrationSnapshot, type Derived } from '@/game'
 import { makeSeedWorld } from '@/data/seed'
 import { uid, type Character, type Domain, type Season, type Settings, type Skill, type Task, type TaskLog, type World } from '@/types/model'
 import { useAuth } from './auth'
 import { Center } from './auth'
 
 export interface Toast { id: number; text: string; kind: 'xp' | 'info' | 'levelup' }
+/** 화면에 띄울 달성·전직 연출. 한 번에 하나씩, 앞에서부터 보여 준다 */
+export type QueuedCelebration = Celebration & { id: number }
 
 interface WorldCtx {
   world: World
@@ -15,6 +17,11 @@ interface WorldCtx {
   mode: Repo['mode']
   toasts: Toast[]
   pushToast: (text: string, kind?: Toast['kind']) => void
+  celebrations: QueuedCelebration[]
+  /** 연출을 대기열에 넣는다 (전직 연출 다시 보기) */
+  celebrate: (c: Celebration) => void
+  /** 지금 보이는 연출을 닫는다 */
+  dismissCelebration: () => void
   addLog: (taskId: string, value: number) => Promise<void>
   removeLog: (logId: string) => Promise<void>
   upsertDomain: (d: Domain) => Promise<void>
@@ -54,6 +61,14 @@ export function WorldProvider({ children }: { children: ReactNode }) {
     window.setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 2600)
   }, [])
 
+  const [celebrations, setCelebrations] = useState<QueuedCelebration[]>([])
+  const celebrationId = useRef(0)
+  const enqueue = useCallback((list: Celebration[]) => {
+    if (list.length) setCelebrations((q) => [...q, ...list.map((c) => ({ ...c, id: ++celebrationId.current }))])
+  }, [])
+  const celebrate = useCallback((c: Celebration) => enqueue([c]), [enqueue])
+  const dismissCelebration = useCallback(() => setCelebrations((q) => q.slice(1)), [])
+
   const query = useQuery({
     queryKey: key,
     queryFn: async () => {
@@ -89,13 +104,21 @@ export function WorldProvider({ children }: { children: ReactNode }) {
       if (m.achieved && m.skill.status === 'active') {
         const updated: Skill = { ...m.skill, status: 'mastered', masteredAt: new Date().toISOString() }
         void mutate((w) => ({ ...w, skills: w.skills.map((s) => (s.id === updated.id ? updated : s)) }), () => repo.upsertSkill(updated))
-        pushToast(`🏆 스킬 달성! ${m.skill.name}`, 'levelup')
       }
     }
-  }, [world, derived, mutate, repo, pushToast])
+  }, [world, derived, mutate, repo])
+
+  // 달성·전직 연출: 직전 상태와 비교해 이 기기에서 방금 생긴 달성만 대기열에 넣는다 (처음 불러온 상태는 기준선)
+  const snapshot = useRef<CelebrationSnapshot | null>(null)
+  useEffect(() => {
+    if (!world || !derived) { snapshot.current = null; return }
+    const prev = snapshot.current
+    snapshot.current = celebrationSnapshot(world.skills, derived.domains)
+    if (prev) enqueue(detectCelebrations(prev, world.skills, derived.domains))
+  }, [world, derived, enqueue])
 
   const api = useMemo<Omit<WorldCtx, 'world' | 'derived'>>(() => ({
-    mode: repo.mode, toasts, pushToast, newId: uid,
+    mode: repo.mode, toasts, pushToast, celebrations, celebrate, dismissCelebration, newId: uid,
     addLog: async (taskId, value) => {
       const log: TaskLog = { id: uid(), taskId, date: todayKey(), value, createdAt: new Date().toISOString() }
       const before = derived?.todayXp ?? 0
@@ -125,7 +148,7 @@ export function WorldProvider({ children }: { children: ReactNode }) {
     deleteSeason: (id) => mutate((w) => ({ ...w, seasons: w.seasons.filter((s) => s.id !== id) }), () => repo.deleteSeason(id)),
     saveCharacter: (c, settings) => mutate((w) => ({ ...w, character: c, settings: settings ?? w.settings }), () => repo.saveCharacter(c, settings ?? qc.getQueryData<World>(key)!.settings)),
     replaceWorld: async (w) => { await repo.replaceWorld(w); await qc.invalidateQueries({ queryKey: key }) },
-  }), [repo, toasts, pushToast, mutate, qc, key, derived])
+  }), [repo, toasts, pushToast, celebrations, celebrate, dismissCelebration, mutate, qc, key, derived])
 
   if (query.isLoading || !world || !derived) return <Center>세계관 불러오는 중…</Center>
   if (query.error) return <Center><div className="card text-accent">불러오기 실패: {(query.error as Error).message}</div></Center>

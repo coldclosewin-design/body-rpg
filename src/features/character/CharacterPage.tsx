@@ -2,10 +2,10 @@ import { Link } from 'react-router'
 import { useWorld } from '@/app/world'
 import { Bar, PageTitle } from '@/components/ui'
 import { PixelCanvas } from '@/pixel/PixelCanvas'
-import { BADGE_THRESHOLDS } from '@/game'
+import { BADGE_THRESHOLDS, promotionOf } from '@/game'
 
 export function CharacterPage() {
-  const { world, derived } = useWorld()
+  const { world, derived, celebrate } = useWorld()
   const c = world.character
   const { domains, seasonStat, badges, streak, totalXp, mastery } = derived
   const mastered = mastery.filter((m) => m.skill.status === 'mastered')
@@ -21,7 +21,10 @@ export function CharacterPage() {
         <div className="text-xs text-muted">총 {totalXp} XP · 🔥 {streak.current}일 (최고 {streak.best}일) · 🏆 스킬 {mastered.length}개 달성</div>
       </div>
 
-      <h2 className="text-sm text-muted">전직 현황</h2>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-2">
+        <h2 className="text-sm text-muted">전직 현황</h2>
+        {domains.some((d) => d.currentTier) && <span className="text-[10px] text-muted">금색 차수 ▶ 를 누르면 전직 연출 다시 보기</span>}
+      </div>
       {domains.map((d) => (
         <div key={d.domain.id} className="card" style={{ borderLeft: `6px solid ${d.domain.color}` }}>
           <div className="flex justify-between items-baseline">
@@ -34,11 +37,16 @@ export function CharacterPage() {
           </div>
           {d.nextTier && <Bar ratio={d.masteredCount / d.nextTier.requiredMastered} color={d.domain.color} className="mt-1" />}
           <div className="flex flex-wrap gap-1 mt-2">
-            {d.domain.tiers.map((t) => (
-              <span key={t.tier} className={`text-[10px] px-1.5 py-0.5 border border-black ${d.currentTier && t.tier <= d.currentTier.tier ? 'bg-gold text-black' : 'bg-black/40 text-muted'}`}>
+            {/* 이미 오른 차수는 눌러서 전직 연출을 다시 볼 수 있다 */}
+            {d.domain.tiers.map((t) => (d.currentTier && t.tier <= d.currentTier.tier ? (
+              <button key={t.tier} type="button" className="text-[10px] px-1.5 py-0.5 border border-black bg-gold text-black cursor-pointer focus-visible:outline-2 focus-visible:outline-sky" aria-label={`${t.tier}차 ${t.name} 전직 연출 다시 보기`} onClick={() => celebrate(promotionOf(d, t))}>
+                {t.tier}차 {t.name} ▶
+              </button>
+            ) : (
+              <span key={t.tier} className="text-[10px] px-1.5 py-0.5 border border-black bg-black/40 text-muted">
                 {t.tier}차 {t.name}
               </span>
-            ))}
+            )))}
           </div>
         </div>
       ))}

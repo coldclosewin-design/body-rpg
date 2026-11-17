@@ -2,6 +2,7 @@ import { NavLink, Outlet } from 'react-router'
 import { useWorld } from './world'
 import { isCloudMode } from '@/lib/supabase'
 import { signOut } from './auth'
+import { CelebrationOverlay } from '@/features/celebrate/CelebrationOverlay'
 
 const NAV = [
   { to: '/', label: '오늘', icon: '📋', end: true },
@@ -55,6 +56,9 @@ export function Layout() {
           </div>
         ))}
       </div>
+
+      {/* 달성·전직 연출 */}
+      <CelebrationOverlay />
     </div>
   )
 }
