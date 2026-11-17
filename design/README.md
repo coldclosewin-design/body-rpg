@@ -21,7 +21,7 @@ design/
    └─ theme.css          Tailwind v4 @theme 토큰(색·폰트) + 픽셀 UI 컴포넌트 클래스
 ```
 
-캐릭터에 `png` 필드가 있으면 앱은 24×32 픽셀맵 대신 그 PNG 스프라이트를 그린다. 전환 방향과 규격은 `sprites/README.md`.
+2026-11-16 디자인 검토에서 캐릭터 A안(24×32 도트 유지)을 채택해, 앱은 지금 24×32 픽셀맵을 그린다. PNG 스프라이트는 `src/pixel/sprites.ts` 의 `USE_PNG_SPRITES` 를 `true` 로 바꾸면 다시 쓰인다(그때는 `png` 필드나 manifest 에 있는 캐릭터가 PNG 로 그려진다). PNG 규격은 `sprites/README.md`.
 
 ## 1. 컨셉 한 줄
 
