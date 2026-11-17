@@ -95,10 +95,19 @@ export function PixelCanvas({ appearance, outfit, accessory, scale = 5, animate 
       ctx.clearRect(0, 0, w, h)
       for (const l of layers) if (l) drawSource(ctx, l.source, frameRef.current, appearance, render)
     }
+    frameRef.current = 0
     render()
     if (!animate) return
-    const id = window.setInterval(() => { frameRef.current = (frameRef.current + 1) % 2; render() }, 600)
-    return () => window.clearInterval(id)
+    if (isPng) {
+      const id = window.setInterval(() => { frameRef.current = (frameRef.current + 1) % 2; render() }, 600)
+      return () => window.clearInterval(id)
+    }
+    /* 픽셀맵의 2번째 프레임은 눈 감김: 3~5초마다 잠깐(160ms)만 보여 준다 */
+    let timer = 0
+    const openEyes = () => { frameRef.current = 0; render(); timer = window.setTimeout(blink, 3000 + Math.random() * 2000) }
+    const blink = () => { frameRef.current = 1; render(); timer = window.setTimeout(openEyes, 160) }
+    timer = window.setTimeout(blink, 3000 + Math.random() * 2000)
+    return () => window.clearTimeout(timer)
   }, [appearance, outfit, accessory, animate, outfitDef, isPng, w, h])
 
   return (

@@ -17,9 +17,15 @@ export { PALETTE, toPixelMap }
 /** public/ 기준 상대 경로를 배포 base(/body-rpg/ 등)에 맞춰 절대 경로로 */
 const assetUrl = (rel: string) => `${import.meta.env.BASE_URL}${rel.replace(/^\//, '')}`
 
-/** PNG 가 있으면(캐릭터 정의의 png 또는 빌드 manifest) 그것을, 없으면 24×32 픽셀맵을 */
+/**
+ * 2026-11-16 디자인 검토에서 캐릭터 A안(24×32 도트 유지)을 채택해 PNG 스프라이트 표시를 껐다.
+ * PNG 파이프라인(design/sprites, public/sprites)은 그대로 두었으므로 true 로 바꾸면 다시 PNG 로 그린다.
+ */
+const USE_PNG_SPRITES = false
+
+/** USE_PNG_SPRITES 이고 PNG 가 있으면(캐릭터 정의의 png 또는 빌드 manifest) 그것을, 아니면 24×32 픽셀맵을 */
 const characterSprites: SpriteDef[] = CHARACTERS.map((c) => {
-  const png = c.png ?? PNG_SPRITES[c.key]
+  const png = USE_PNG_SPRITES ? (c.png ?? PNG_SPRITES[c.key]) : undefined
   return {
     key: c.key, label: c.label, desc: c.desc, layer: 'outfit',
     source: png ? { ...png, url: assetUrl(png.url) } : toPixelMap(c.parts, c.recolor),
