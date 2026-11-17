@@ -14,12 +14,12 @@ const NAV = [
 export function Layout() {
   const { toasts, mode, derived, world } = useWorld()
   const link = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-2 px-3 py-2 ${isActive ? 'bg-panel2 text-gold' : 'text-ink hover:bg-panel2/60'}`
+    `flex items-center gap-2 px-3 py-2 border-l-[3px] ${isActive ? 'bg-panel2 text-gold font-bold border-gold' : 'text-ink border-transparent hover:bg-panel2/60'}`
 
   return (
     <div className="min-h-full md:flex">
       {/* PC 사이드바 */}
-      <aside className="hidden md:flex md:flex-col w-56 shrink-0 bg-panel border-r-4 border-black p-3 gap-1 sticky top-0 h-screen">
+      <aside className="hidden md:flex md:flex-col w-56 shrink-0 bg-panel border-r-4 border-edge p-3 gap-1 sticky top-0 h-screen">
         <div className="text-gold text-lg mb-2">Body RPG</div>
         {NAV.map((n) => (
           <NavLink key={n.to} to={n.to} end={n.end} className={link}>
@@ -38,9 +38,10 @@ export function Layout() {
       </main>
 
       {/* 모바일 하단 탭 */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 bg-panel border-t-4 border-black flex z-20" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+      <nav className="md:hidden fixed bottom-0 inset-x-0 bg-panel border-t-4 border-edge flex z-20" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+        {/* 선택된 탭: 금색 밑줄 + 굵은 글자 */}
         {NAV.map((n) => (
-          <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => `flex-1 flex flex-col items-center py-2 text-[11px] ${isActive ? 'text-gold' : 'text-muted'}`}>
+          <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => `flex-1 flex flex-col items-center pt-2 pb-1.5 text-[11px] border-b-[3px] ${isActive ? 'text-gold font-bold border-gold' : 'text-muted border-transparent'}`}>
             <span className="text-lg leading-none">{n.icon}</span>{n.label}
           </NavLink>
         ))}
@@ -49,7 +50,7 @@ export function Layout() {
       {/* 토스트 */}
       <div className="fixed top-3 inset-x-0 flex flex-col items-center gap-2 pointer-events-none z-30">
         {toasts.map((t) => (
-          <div key={t.id} className={`px-4 py-2 border-2 border-black shadow-[3px_3px_0_#000] text-sm ${t.kind === 'xp' ? 'bg-gold text-black' : t.kind === 'levelup' ? 'bg-accent text-white' : 'bg-panel2 text-ink'}`}>
+          <div key={t.id} className={`px-4 py-2 border-2 border-edge shadow-[3px_3px_0_var(--color-edge)] text-sm ${t.kind === 'xp' ? 'bg-gold text-black' : t.kind === 'levelup' ? 'bg-accent text-white' : 'bg-panel2 text-ink'}`}>
             {t.text}
           </div>
         ))}

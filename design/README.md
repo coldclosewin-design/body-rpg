@@ -88,23 +88,25 @@ CAPE/LONG_COAT/TATTERED_CAPE/WAVES/QUIVER 같은 뒤 배경 → 다리(PANTS/SHO
 
 ## 3. UI 테마 (`theme/theme.css`)
 
-Tailwind v4 `@theme` 토큰. `text-gold`, `bg-panel`, `border-muted` 같은 유틸리티가 자동 생성된다.
+테마 이름은 **밤의 길드**(2026-11-16 디자인 검토에서 채택한 테마 A — 기존 남색·금색을 정돈). Tailwind v4 `@theme` 토큰. `text-gold`, `bg-panel`, `border-muted` 같은 유틸리티가 자동 생성된다.
 
 | 토큰 | 값 | 쓰임 |
 |---|---|---|
 | `--color-bg` | #1a1a2e | 페이지 바탕 |
 | `--color-panel` | #16213e | 카드 |
 | `--color-panel2` | #0f3460 | 기본 버튼, 사이드바 강조 |
-| `--color-accent` | #e94560 | 주요 행동(세션 완료), 경고 |
-| `--color-gold` | #ffd166 | XP, 시즌, 장착 중 |
-| `--color-mint` | #06d6a0 | 완료, 긍정, 고블린 카드 |
+| `--color-accent` | #e94560 | 되돌릴 수 없는 행동(초기화), 경고 |
+| `--color-gold` | #ffd166 | 화면의 주 행동 하나, XP, 시즌 보상, 장착 중 |
+| `--color-mint` | #60deb9 | 완료에만 (완료 표시, 고블린 안내) |
 | `--color-sky` | #4cc9f0 | 링크, 해금 경로 |
 | `--color-ink` | #eaeaea | 본문 글자 |
-| `--color-muted` | #9aa5b1 | 보조 글자, 입력 테두리 |
+| `--color-muted` | #b2bdcb | 보조 글자, 입력 테두리 |
+| `--color-edge` | #080d18 | 경계선과 오프셋 그림자 |
 | `--font-pixel` | Galmuri11 → Galmuri9 → monospace | 전체 글꼴. 안티앨리어싱 끔 |
 
 컴포넌트 클래스: `.card` `.btn` `.btn-accent` `.btn-gold` `.btn-mint` `.btn-ghost` `.input` `.label` `.bar` `.pixel-border`.
-공통 문법은 **2px 검정 테두리 + 3~4px 오프셋 검정 그림자**, 버튼은 누르면 2px 내려가며 그림자가 사라진다. 둥근 모서리와 그라데이션은 쓰지 않는다.
+공통 문법은 **2px 경계선(`--color-edge`) + 3px 오프셋 그림자**, 버튼은 누르면 2px 내려가며 그림자가 사라진다. 둥근 모서리와 그라데이션은 쓰지 않는다.
+주 행동 버튼은 화면당 하나만 금색(`.btn-gold`), 보조 행동은 외곽선(`.btn-ghost`). 진행 바는 채움 8px. 선택된 탭은 금색 밑줄 + 굵은 글자.
 
 ## 4. 다른 프로젝트에서 쓰기
 
